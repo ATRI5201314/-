@@ -1,0 +1,1098 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>说得好 · 英语口语陪练</title>
+<style>
+  :root{
+    --bg:#0d1117;--bg2:#161b22;--card:#1a212b;--line:#2a3441;
+    --txt:#e6edf3;--dim:#8b98a8;--dim2:#5f6b7a;
+    --acc:#4f9cf9;--acc2:#7c5cff;--ok:#3fb950;--warn:#d29922;--bad:#f85149;
+    --weak:#ffb454;--link:#4fd1c5;
+  }
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+  html,body{margin:0;padding:0}
+  body{
+    background:radial-gradient(1200px 600px at 20% -10%,#1b2740 0%,transparent 60%),
+               radial-gradient(900px 500px at 100% 0%,#2a1b3d 0%,transparent 55%),var(--bg);
+    color:var(--txt);
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;
+    min-height:100vh;line-height:1.6;
+  }
+  .wrap{max-width:720px;margin:0 auto;padding:0 16px 120px}
+  header{padding:26px 0 14px;text-align:center}
+  h1{font-size:22px;margin:0 0 6px;letter-spacing:.5px}
+  h1 span{background:linear-gradient(90deg,var(--acc),var(--acc2));-webkit-background-clip:text;background-clip:text;color:transparent}
+  .sub{color:var(--dim);font-size:13px;margin:0}
+
+  .tabs{display:flex;gap:6px;background:var(--bg2);border:1px solid var(--line);border-radius:12px;padding:4px;margin:16px 0 18px;position:sticky;top:8px;z-index:20;backdrop-filter:blur(8px)}
+  .tab{flex:1;text-align:center;padding:9px 4px;border-radius:9px;font-size:13.5px;color:var(--dim);cursor:pointer;user-select:none;transition:.18s}
+  .tab.on{background:linear-gradient(135deg,var(--acc),var(--acc2));color:#fff;font-weight:600}
+  .view{display:none}
+  .view.on{display:block;animation:fade .25s ease}
+  @keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+
+  .topics{display:flex;gap:8px;overflow-x:auto;padding-bottom:10px;margin-bottom:4px;scrollbar-width:none}
+  .topics::-webkit-scrollbar{display:none}
+  .chip{flex:0 0 auto;padding:7px 14px;border-radius:999px;background:var(--bg2);border:1px solid var(--line);font-size:13px;color:var(--dim);cursor:pointer;white-space:nowrap;transition:.18s}
+  .chip.on{background:rgba(79,156,249,.16);border-color:var(--acc);color:var(--acc);font-weight:600}
+
+  .card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:18px;margin-bottom:14px}
+  .card-title{font-size:12px;color:var(--dim2);letter-spacing:1px;text-transform:uppercase;margin:0 0 10px}
+
+  .sent{font-size:20px;line-height:2.05;letter-spacing:.2px;word-break:break-word}
+  .sent .lk{color:var(--link);font-weight:600}
+  .sent .lkj{display:inline-block;width:13px;height:2px;margin:0 1px;border-radius:2px;background:var(--link);vertical-align:middle}
+  .sent .weak{color:var(--weak);border-bottom:1.5px dashed rgba(255,180,84,.55);padding-bottom:1px}
+  .sent .gsep{color:var(--dim2);font-weight:300;padding:0 5px;user-select:none;font-size:16px}
+  .zh{color:var(--dim);font-size:13.5px;margin-top:12px;padding-top:12px;border-top:1px dashed var(--line)}
+
+  .legend{display:flex;flex-wrap:wrap;gap:14px;font-size:12.5px;color:var(--dim);margin-top:14px}
+  .legend i{font-style:normal;display:inline-flex;align-items:center;gap:5px}
+  .dot{width:9px;height:9px;border-radius:3px;display:inline-block}
+
+  .tip{background:rgba(79,156,249,.08);border-left:3px solid var(--acc);border-radius:0 10px 10px 0;padding:11px 14px;font-size:13px;color:#b9c8d8;margin-top:14px}
+  .tip b{color:var(--acc)}
+
+  .row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+  .btn{flex:1;min-width:120px;padding:13px;border-radius:12px;border:1px solid var(--line);background:var(--bg2);color:var(--txt);font-size:15px;font-weight:600;cursor:pointer;transition:.18s;display:flex;align-items:center;justify-content:center;gap:7px}
+  .btn:hover{border-color:var(--dim2)}
+  .btn:active{transform:scale(.985)}
+  .btn.primary{background:linear-gradient(135deg,var(--acc),var(--acc2));border:none;color:#fff}
+  .btn.rec{background:linear-gradient(135deg,#f85149,#d29922);border:none;color:#fff}
+  .btn.rec.live{animation:pulse 1.3s infinite}
+  @keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(248,81,73,.5)}50%{box-shadow:0 0 0 12px rgba(248,81,73,0)}}
+  .btn:disabled{opacity:.4;cursor:not-allowed}
+  .btn.sm{flex:0 0 auto;min-width:auto;padding:9px 15px;font-size:13.5px}
+
+  .rate{display:flex;align-items:center;gap:10px;font-size:13px;color:var(--dim);margin-top:12px}
+  input[type=range]{-webkit-appearance:none;appearance:none;flex:1;height:4px;border-radius:2px;background:var(--line);outline:none}
+  input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:16px;height:16px;border-radius:50%;background:var(--acc);cursor:pointer}
+  input[type=range]::-moz-range-thumb{width:16px;height:16px;border-radius:50%;background:var(--acc);border:none;cursor:pointer}
+
+  .live{font-size:14px;color:var(--dim2);min-height:24px;margin-top:12px}
+
+  /* 模型准备 */
+  .prep{display:flex;gap:12px;align-items:flex-start}
+  .prep .txt{flex:1;font-size:13px;color:var(--dim)}
+  .prep .txt b{color:var(--txt)}
+  .pbar{height:6px;background:var(--bg2);border-radius:3px;overflow:hidden;margin-top:9px;border:1px solid var(--line)}
+  .pbar i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--acc),var(--acc2));transition:width .3s}
+  .pill{font-size:11.5px;padding:3px 9px;border-radius:999px;border:1px solid var(--line);color:var(--dim);white-space:nowrap}
+  .pill.ok{color:#7ee787;border-color:rgba(63,185,80,.4);background:rgba(63,185,80,.1)}
+  .pill.load{color:#e3b341;border-color:rgba(210,153,34,.4);background:rgba(210,153,34,.1)}
+  .pill.bad{color:#ff7b72;border-color:rgba(248,81,73,.4);background:rgba(248,81,73,.1)}
+
+  .scorewrap{display:flex;gap:18px;align-items:center;margin-bottom:8px}
+  .ring{position:relative;width:104px;height:104px;flex:0 0 auto}
+  .ring svg{transform:rotate(-90deg)}
+  .ring .val{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center}
+  .ring .num{font-size:29px;font-weight:700;line-height:1}
+  .ring .lbl{font-size:10px;color:var(--dim);letter-spacing:1px;margin-top:3px}
+  .bars{flex:1;min-width:0}
+  .bar{margin-bottom:9px}
+  .bar .bt{display:flex;justify-content:space-between;font-size:12.5px;color:var(--dim);margin-bottom:5px}
+  .bar .bt b{color:var(--txt);font-variant-numeric:tabular-nums}
+  .track{height:7px;border-radius:4px;background:var(--bg2);overflow:hidden}
+  .fill{height:100%;border-radius:4px;width:0;transition:width .6s cubic-bezier(.2,.8,.3,1)}
+
+  .words{display:flex;flex-wrap:wrap;gap:7px;margin-top:4px}
+  .w{padding:5px 10px 6px;border-radius:9px;font-size:14px;border:1px solid transparent;position:relative;line-height:1.3}
+  .w.ok{background:rgba(63,185,80,.13);color:#7ee787;border-color:rgba(63,185,80,.3)}
+  .w.close{background:rgba(210,153,34,.13);color:#e3b341;border-color:rgba(210,153,34,.3)}
+  .w.bad{background:rgba(248,81,73,.13);color:#ff7b72;border-color:rgba(248,81,73,.3)}
+  .w .ph{display:block;font-size:10px;letter-spacing:.6px;opacity:.8;font-family:ui-monospace,Menlo,Consolas,monospace;margin-top:1px;font-weight:400}
+  .w .ph u{text-decoration:none;color:var(--bad)}
+  .w .ph s{color:#e3b341}
+
+  .stat{display:flex;gap:10px;margin-top:14px;flex-wrap:wrap}
+  .stat>div{flex:1;min-width:70px;background:var(--bg2);border:1px solid var(--line);border-radius:10px;padding:10px;text-align:center}
+  .stat .n{font-size:17px;font-weight:700;font-variant-numeric:tabular-nums}
+  .stat .k{font-size:11px;color:var(--dim2);margin-top:2px}
+
+  .feedback{font-size:13.5px;color:#b9c8d8;margin-top:14px;padding:12px 14px;background:var(--bg2);border-radius:10px;border:1px solid var(--line)}
+  .feedback b{color:#fff}
+  .feedback .hl{color:var(--acc)}
+  .warnband{background:rgba(248,81,73,.09);border:1px solid rgba(248,81,73,.35);border-radius:11px;padding:11px 13px;font-size:13px;color:#ff9a92;margin-bottom:12px}
+  .warnband b{color:#ffb3ac}
+
+  .iss{display:flex;flex-direction:column;gap:8px;margin-top:4px}
+  .is{background:var(--bg2);border:1px solid var(--line);border-left:3px solid var(--acc);border-radius:0 10px 10px 0;padding:9px 12px;font-size:13px;color:#b9c8d8}
+  .is .k{font-size:10.5px;letter-spacing:.8px;text-transform:uppercase;color:var(--dim2);display:block;margin-bottom:2px}
+  .is.lk{border-left-color:var(--link)}
+  .is.wk{border-left-color:var(--weak)}
+  .is.ph{border-left-color:var(--bad)}
+  .is.pz{border-left-color:var(--warn)}
+  .is b{color:#fff}
+
+  .kv{display:flex;gap:6px;flex-wrap:wrap;margin-top:6px}
+  .kv span{font-size:11.5px;padding:2px 8px;border-radius:6px;background:rgba(63,185,80,.12);color:#7ee787;border:1px solid rgba(63,185,80,.25)}
+
+  details{margin-top:12px}
+  summary{font-size:12.5px;color:var(--dim);cursor:pointer;outline:none}
+  .mono{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:11.5px;color:var(--dim);word-break:break-all;line-height:1.8;margin-top:8px}
+
+  .navrow{display:flex;gap:10px;margin-top:2px}
+  .hist{display:flex;flex-direction:column;gap:9px}
+  .hi{background:var(--bg2);border:1px solid var(--line);border-radius:11px;padding:11px 13px;display:flex;gap:12px;align-items:center}
+  .hi .s{font-size:19px;font-weight:700;width:44px;text-align:center;flex:0 0 auto;font-variant-numeric:tabular-nums}
+  .hi .m{flex:1;min-width:0}
+  .hi .t{font-size:13.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .hi .d{font-size:11.5px;color:var(--dim2);margin-top:2px}
+  .empty{text-align:center;color:var(--dim2);font-size:13.5px;padding:36px 0}
+
+  .doc{font-size:14px;color:#c3ceded}
+  .doc h3{font-size:15px;margin:22px 0 8px;color:var(--txt)}
+  .doc h3:first-child{margin-top:0}
+  .doc p{color:var(--dim);margin:0 0 10px;line-height:1.75}
+  .doc ul{color:var(--dim);padding-left:20px;margin:0 0 12px}
+  .doc li{margin-bottom:6px;line-height:1.7}
+  .doc strong{color:var(--txt)}
+  .doc code{background:var(--bg2);border:1px solid var(--line);border-radius:5px;padding:1px 5px;font-size:12px;color:#a5d6ff}
+  .warnbox{background:rgba(210,153,34,.09);border:1px solid rgba(210,153,34,.3);border-radius:12px;padding:13px 15px;font-size:13px;color:#d9c58c;margin:14px 0}
+  .warnbox b{color:#e3b341}
+
+  .toast{position:fixed;left:50%;bottom:30px;transform:translate(-50%,20px);background:#232c38;border:1px solid var(--line);color:var(--txt);padding:11px 20px;border-radius:11px;font-size:13.5px;opacity:0;pointer-events:none;transition:.25s;z-index:99;box-shadow:0 8px 28px rgba(0,0,0,.45);max-width:88vw}
+  .toast.on{opacity:1;transform:translate(-50%,0)}
+  .spin{width:14px;height:14px;border:2px solid var(--line);border-top-color:var(--acc);border-radius:50%;display:inline-block;animation:sp .8s linear infinite;vertical-align:-2px}
+  @keyframes sp{to{transform:rotate(360deg)}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>说得好 · <span>英语口语陪练</span></h1>
+    <p class="sub">六级口语 · 音素级发音评测 · 连读 / 弱读 / 意群</p>
+  </header>
+
+  <div class="tabs">
+    <div class="tab on" data-v="practice">练习</div>
+    <div class="tab" data-v="history">我的记录</div>
+    <div class="tab" data-v="about">打分原理</div>
+  </div>
+
+  <div class="view on" id="v-practice">
+    <div class="card" id="prepcard">
+      <div class="card-title">本地评测引擎</div>
+      <div class="prep">
+        <div class="txt" id="preptxt"><b>正在启动…</b></div>
+        <div class="pill load" id="preppill"><span class="spin"></span> 准备中</div>
+      </div>
+      <div class="pbar" id="prepbar" style="display:none"><i></i></div>
+    </div>
+
+    <div class="topics" id="topics"></div>
+
+    <div class="card">
+      <div class="row" style="margin-bottom:14px">
+        <div style="font-size:12.5px;color:var(--dim2)" id="progress">第 1 / 5 句</div>
+        <div style="flex:1"></div>
+        <div style="font-size:12px;color:var(--dim2)" id="topicname"></div>
+      </div>
+
+      <div class="sent" id="sent"></div>
+      <div class="zh" id="zh"></div>
+
+      <div class="legend">
+        <i><span class="dot" style="background:var(--link)"></span>连读（连起来读成一个音）</i>
+        <i><span class="dot" style="background:var(--weak)"></span>弱读（读轻、读快、读成 /ə/）</i>
+        <i><span class="dot" style="background:var(--dim2)"></span> / 意群停顿</i>
+      </div>
+
+      <div class="tip" id="tip"></div>
+
+      <div class="rate">
+        <span>示范语速</span>
+        <input type="range" id="rate" min="0.6" max="1.15" step="0.05" value="0.9">
+        <span id="rateval" style="width:34px;text-align:right;color:var(--txt)">0.9x</span>
+      </div>
+
+      <div class="row" style="margin-top:14px">
+        <button class="btn" id="btnPlay">▶ 听标准示范</button>
+        <button class="btn rec" id="btnRec">● 开始朗读</button>
+      </div>
+      <div class="live" id="live"></div>
+      <audio id="player" style="display:none"></audio>
+      <div class="row" style="margin-top:10px">
+        <button class="btn sm" id="btnReplay" style="display:none">↻ 回放我的录音</button>
+        <button class="btn sm" id="btnToggleSent" style="display:none">👁 看原文重读</button>
+      </div>
+    </div>
+
+    <div class="card" id="result" style="display:none"></div>
+
+    <div class="navrow">
+      <button class="btn" id="btnPrev">← 上一句</button>
+      <button class="btn primary" id="btnNext">下一句 →</button>
+    </div>
+  </div>
+
+  <div class="view" id="v-history">
+    <div class="card">
+      <div class="card-title">总体</div>
+      <div class="stat" id="hstat"></div>
+    </div>
+    <div class="card">
+      <div class="card-title">最近练习</div>
+      <div class="hist" id="hist"></div>
+    </div>
+    <button class="btn" id="btnClear" style="margin-top:2px">清空记录</button>
+  </div>
+
+  <div class="view" id="v-about">
+    <div class="card doc">
+      <h3>为什么市面上很多朗读打分「不准」</h3>
+      <p>绝大多数跟读打分 App，底层是<strong>云端语音识别（ASR）</strong>。它算的是「识别器有多确信自己听懂了」，<strong>不是</strong>「你的发音有多接近母语者」。这有一个系统性偏差：当你的连读、弱读都做对、声音糊成一片时，识别器反而更容易听错 → 分数反而更低。<strong>越地道越低分，这不是你的问题，是它的机制问题。</strong></p>
+      <div class="warnbox">
+        <b>这个工具不用语音识别。</b>它把音频喂给一个<strong>音素级声学模型</strong>，直接算出你说的每个音；再用<strong>强制对齐</strong>把每个参考音素钉到具体的毫秒区间上，然后逐个音打分。整个过程<strong>在你手机本地跑</strong>，不联网、不把录音传到任何服务器。
+      </div>
+
+      <h3>打分是怎么算出来的</h3>
+      <ul>
+        <li><strong>① 文本 → 音素</strong>：用 CMU 发音词典把原句转成音素序列（<code>university → Y UW N AH V ER S AH T IY</code>），词典里没有的词用神经网络模型补上。</li>
+        <li><strong>② 音频 → 音素后验</strong>：wav2vec2 声学模型每 10 毫秒输出一次「这一帧是各个音素的概率」，共 40 多个音素。</li>
+        <li><strong>③ 强制对齐</strong>：用 DTW 把参考音素的序列钉到音频帧上，得到每个音素的起止时间。</li>
+        <li><strong>④ 逐音打分（GOP）</strong>：对每个音素，取它自己那一段帧上「模型中该音素的平均后验概率」作为发音可信度。这是学术界评发音质量的标准指标 <strong>GOP（Goodness of Pronunciation）</strong>。</li>
+        <li><strong>⑤ 六维汇总</strong>：准确度 / 完整度 / 流利度 / 连读 / 弱读 / 意群，加权成总分，并给出六级口语对应的档位。</li>
+      </ul>
+
+      <h3>连读、弱读、意群是「量」出来的，不是猜的</h3>
+      <ul>
+        <li><strong>连读</strong>：看两个相邻词之间<strong>有没有声学间隙</strong>。前一个音的帧和后一个音的帧直接相接（模型在边界处没识别出静音）= 气流没断 = 连上了。经典连读位置才计（辅音+元音、元音+元音、失去爆破），跨标点不计。</li>
+        <li><strong>弱读</strong>：功能词（to / for / can / and …）的重读元音，在这段帧上到底是「重读元音占优」还是「央化元音 /ə ɪ ɜ/ 占优」。由后验概率直接判定，读成强读也<strong>不会</strong>重罚——只是个可改进项。</li>
+        <li><strong>意群</strong>：内部停顿（≥0.22 秒）落在标点处 = 正确换气；落在句子中间 = 提醒你别乱断句。</li>
+      </ul>
+
+      <h3>三个「反冤枉」的设计</h3>
+      <ul>
+        <li><strong>口音变体容忍</strong>：美音/英音、自由变体（AA~AO、AH~ER、n~ŋ 同化、t/d 闪音化等）都算「接近」，给保底分并单独列出，不当错误扣分。</li>
+        <li><strong>功能词弱读豁免</strong>：<code>to /tə/~/tuː/</code>、<code>for /fɚ/~/fɔːr/</code>、<code>can /kən/~/kæn/</code>…… 词表给的是重读形式，你按弱读读，<strong>绝不扣分</strong>。</li>
+        <li><strong>内容校验</strong>：模型会独立「听」一遍你实际说的音素串（CTC 解码），和参考串做编辑距离比对。这样不会因为强制对齐「强行对上」而虚高——但你读错句子也会被如实指出来，并给出匹配度。</li>
+      </ul>
+
+      <h3>怎么用它练</h3>
+      <ul>
+        <li><strong>第 1 遍</strong>：点「听标准示范」，注意青色（连读）、橙色（弱读）和灰色的意群停顿。</li>
+        <li><strong>第 2 遍</strong>：点「开始朗读」跟读，再点一下停止。等它出结果。</li>
+        <li><strong>第 3 遍</strong>：看下面<strong>问题清单</strong>——它只报最需要改的几处，每处都告诉你具体怎么发音。改完再读一遍看分数有没有上去。</li>
+      </ul>
+
+      <h3>首次使用会下载一个模型</h3>
+      <p>需要一次性下载约 <strong>118MB</strong> 的声学模型（存进浏览器缓存，之后不再下载）。发音词典（约 7MB）和推理运行时从公共 CDN 加载。这些都是<strong>一次性</strong>的。</p>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script id="workerB64" type="text/plain">dmFyIGRlPU9iamVjdC5kZWZpbmVQcm9wZXJ0eTt2YXIgZmU9KG4sZSxvKT0+ZSBpbiBuP2RlKG4sZSx7ZW51bWVyYWJsZTohMCxjb25maWd1cmFibGU6ITAsd3JpdGFibGU6ITAsdmFsdWU6b30pOm5bZV09bzt2YXIgST0obixlLG8pPT5mZShuLHR5cGVvZiBlIT0ic3ltYm9sIj9lKyIiOmUsbyk7ZnVuY3Rpb24gYXQobil7bGV0IGU9MDtmb3IobGV0IGEgb2YgbillKz1hO2UvPW4ubGVuZ3RoO2xldCBvPTA7Zm9yKGxldCBhIG9mIG4pbys9KGEtZSkqKGEtZSk7bGV0IHM9TWF0aC5zcXJ0KG8vbi5sZW5ndGgrMWUtNykscj1uZXcgRmxvYXQzMkFycmF5KG4ubGVuZ3RoKTtmb3IobGV0IGE9MDthPG4ubGVuZ3RoO2ErKylyW2FdPShuW2FdLWUpL3M7cmV0dXJuIHJ9ZnVuY3Rpb24ga3QobixlLG8pe2xldCBzPW5ldyBGbG9hdDMyQXJyYXkoZSpvKTtmb3IobGV0IHI9MDtyPGU7cisrKXtsZXQgYT1yKm8saD0tMS8wO2ZvcihsZXQgdT0wO3U8bzt1KyspaD1NYXRoLm1heChoLG5bYSt1XSk7bGV0IGM9MDtmb3IobGV0IHU9MDt1PG87dSsrKXtsZXQgbD1NYXRoLmV4cChuW2ErdV0taCk7c1thK3VdPWwsYys9bH1mb3IobGV0IHU9MDt1PG87dSsrKXNbYSt1XS89Y31yZXR1cm4gc31mdW5jdGlvbiBJdChuLGUsbyxzKXtsZXQgcj1zLmxlbmd0aCxhPShkLGcpPT4tbltkKm8rc1tnXV0saD1uZXcgRmxvYXQ2NEFycmF5KGUqcikuZmlsbCgxLzApLGM9bmV3IEludDhBcnJheShlKnIpO2hbMF09YSgwLDApO2ZvcihsZXQgZD0xO2Q8ZTtkKyspe2xldCBnPU1hdGgubWluKGQsci0xKTtmb3IobGV0IHA9MDtwPD1nO3ArKyl7bGV0IGI9aFsoZC0xKSpyK3BdLGY9cD4wP2hbKGQtMSkqcisocC0xKV06MS8wLHksSDtmPD1iPyh5PWYsSD0xKTooeT1iLEg9MCkseSE9PTEvMCYmKGhbZCpyK3BdPWEoZCxwKSt5LGNbZCpyK3BdPUgpfX1sZXQgdT1uZXcgSW50MzJBcnJheShlKSxsPXItMTtmb3IobGV0IGQ9ZS0xO2Q+PTA7ZC0tKXVbZF09bCxjW2QqcitsXT09PTEmJihsLT0xKTtyZXR1cm4gdX12YXIgY3Q9WyJ6ZXJvIiwib25lIiwidHdvIiwidGhyZWUiLCJmb3VyIiwiZml2ZSIsInNpeCIsInNldmVuIiwiZWlnaHQiLCJuaW5lIiwidGVuIiwiZWxldmVuIiwidHdlbHZlIiwidGhpcnRlZW4iLCJmb3VydGVlbiIsImZpZnRlZW4iLCJzaXh0ZWVuIiwic2V2ZW50ZWVuIiwiZWlnaHRlZW4iLCJuaW5ldGVlbiJdLHBlPVsiIiwiIiwidHdlbnR5IiwidGhpcnR5IiwiZm9ydHkiLCJmaWZ0eSIsInNpeHR5Iiwic2V2ZW50eSIsImVpZ2h0eSIsIm5pbmV0eSJdLGdlPVsiIiwidGhvdXNhbmQiLCJtaWxsaW9uIiwiYmlsbGlvbiIsInRyaWxsaW9uIiwicXVhZHJpbGxpb24iXTtmdW5jdGlvbiBXdChuKXtsZXQgZT1bXTtpZihuPj0xMDAmJihlLnB1c2goY3RbTWF0aC5mbG9vcihuLzEwMCldLCJodW5kcmVkIiksbiU9MTAwKSxuPj0yMCl7bGV0IG89cGVbTWF0aC5mbG9vcihuLzEwKV07ZS5wdXNoKG4lMTA/YCR7b30tJHtjdFtuJTEwXX1gOm8pfWVsc2Ugbj4wJiZlLnB1c2goY3Rbbl0pO3JldHVybiBlfWZ1bmN0aW9uIGx0KG4pe2lmKG49PT0wKXJldHVybiJ6ZXJvIjtsZXQgZT1bXTtmb3IoO24+MDspZS5wdXNoKG4lMWUzKSxuPU1hdGguZmxvb3Iobi8xZTMpO2xldCBvPVtdO2ZvcihsZXQgcz1lLmxlbmd0aC0xO3M+PTA7cy0tKWVbc10hPT0wJiYoby5wdXNoKC4uLld0KGVbc10pKSxzPjAmJm8ucHVzaChnZVtzXSkpO3JldHVybiBvLmpvaW4oIiAiKX1mdW5jdGlvbiBtZShuLGUpe2xldCBvPVN0cmluZyhuKSxzPW8ubGVuZ3RoJTI/IjAiK286byxyPVtdO2ZvcihsZXQgYT0wO2E8cy5sZW5ndGg7YSs9Mil7bGV0IGg9cGFyc2VJbnQocy5zbGljZShhLGErMiksMTApO2g9PT0wP3IucHVzaChlLGUpOmg8MTA/ci5wdXNoKGUsY3RbaF0pOnIucHVzaChXdChoKS5qb2luKCIgIikpfXJldHVybiByLmpvaW4oIiAiKX1mdW5jdGlvbiB3ZShuKXtsZXQgZT1wYXJzZUludChuLDEwKTtyZXR1cm4gZT4xZTMmJmU8M2UzP2U9PT0yZTM/InR3byB0aG91c2FuZCI6ZT4yZTMmJmU8MjAxMD8idHdvIHRob3VzYW5kICIrbHQoZSUxMDApOmUlMTAwPT09MD9sdChNYXRoLmZsb29yKGUvMTAwKSkrIiBodW5kcmVkIjptZShlLCJvaCIpOmx0KGUpfWZ1bmN0aW9uIHllKG4pe2xldCBlPW4uc3BsaXQoIi4iKTtpZihlLmxlbmd0aD4yKXJldHVybiBuKyIgZG9sbGFycyI7bGV0IG89ZVswXT9wYXJzZUludChlWzBdLDEwKTowLHM9ZS5sZW5ndGg+MSYmZVsxXT9wYXJzZUludChlWzFdLDEwKTowO3JldHVybiBvJiZzP2Ake299ICR7bz09PTE/ImRvbGxhciI6ImRvbGxhcnMifSwgJHtzfSAke3M9PT0xPyJjZW50IjoiY2VudHMifWA6bz9gJHtvfSAke289PT0xPyJkb2xsYXIiOiJkb2xsYXJzIn1gOnM/YCR7c30gJHtzPT09MT8iY2VudCI6ImNlbnRzIn1gOiJ6ZXJvIGRvbGxhcnMifWZ1bmN0aW9uIER0KG4pe3JldHVybiBuPW4ucmVwbGFjZSgvKFswLTldWzAtOSxdK1swLTldKS9nLGU9PmUucmVwbGFjZSgvLC9nLCIiKSksbj1uLnJlcGxhY2UoL8KjKFswLTksXSpbMC05XSspL2csKGUsbyk9PmAke299IHBvdW5kc2ApLG49bi5yZXBsYWNlKC9cJChbMC05LixdKlswLTldKykvZywoZSxvKT0+eWUobykpLG49bi5yZXBsYWNlKC8oWzAtOV0rXC5bMC05XSspL2csZT0+ZS5yZXBsYWNlKCIuIiwiIHBvaW50ICIpKSxuPW4ucmVwbGFjZSgvWzAtOV0rKHN0fG5kfHJkfHRoKS9nLGU9PnhlKGUpKSxuPW4ucmVwbGFjZSgvWzAtOV0rL2csZT0+d2UoZSkpLG59ZnVuY3Rpb24geGUobil7bGV0IGU9cGFyc2VJbnQobiwxMCksbz1sdChlKS5zcGxpdCgiICIpLHM9by5wb3AoKSxyPXtvbmU6ImZpcnN0Iix0d286InNlY29uZCIsdGhyZWU6InRoaXJkIixmaXZlOiJmaWZ0aCIsZWlnaHQ6ImVpZ2h0aCIsbmluZToibmludGgiLHR3ZWx2ZToidHdlbGZ0aCJ9LGE9cltzXXx8KHMuZW5kc1dpdGgoInkiKT9zLnNsaWNlKDAsLTEpKyJpZXRoIjpzKyJ0aCIpO2lmKHMuaW5jbHVkZXMoIi0iKSl7bGV0W2gsY109cy5zcGxpdCgiLSIpO2E9aCsiLSIrKHJbY118fGMrInRoIil9cmV0dXJuWy4uLm8sYV0uam9pbigiICIpfXZhciBPdD1uPT4xLygxK01hdGguZXhwKC1uKSkscT1jbGFzc3tjb25zdHJ1Y3RvcihlKXtJKHRoaXMsImNtdSIpO0kodGhpcywiaG9tb2dyYXBocyIpO0kodGhpcywiZ3JhcGhlbWVzIik7SSh0aGlzLCJwaG9uZW1lcyIpO0kodGhpcywiZzJpZHgiKTtJKHRoaXMsImlkeDJwIik7SSh0aGlzLCJ3Iix7fSk7SSh0aGlzLCJIIik7SSh0aGlzLCJFIik7dGhpcy5jbXU9ZS5jbXVkaWN0LHRoaXMuaG9tb2dyYXBocz1lLmhvbW9ncmFwaHMsdGhpcy5ncmFwaGVtZXM9ZS52b2NhYi5ncmFwaGVtZXMsdGhpcy5waG9uZW1lcz1lLnZvY2FiLnBob25lbWVzLHRoaXMuZzJpZHg9T2JqZWN0LmZyb21FbnRyaWVzKHRoaXMuZ3JhcGhlbWVzLm1hcCgocixhKT0+W3IsYV0pKSx0aGlzLmlkeDJwPXRoaXMucGhvbmVtZXM7bGV0e21hbmlmZXN0Om8sZGF0YTpzfT1lLmdydTtmb3IobGV0W3Ise29mZnNldDphLHNoYXBlOmh9XW9mIE9iamVjdC5lbnRyaWVzKG8pKXtsZXQgYz1oLnJlZHVjZSgodSxsKT0+dSpsLDEpO3RoaXMud1tyXT17ZGF0YTpzLnN1YmFycmF5KGEsYStjKSxzaGFwZTpofX10aGlzLkg9dGhpcy53LmVuY193X2hoLnNoYXBlWzFdLHRoaXMuRT10aGlzLncuZW5jX2VtYi5zaGFwZVsxXX1ncnVjZWxsKGUsbyxzLHIsYSxoKXtsZXQgYz10aGlzLkgsdT0zKmMsbD1uZXcgRmxvYXQ2NEFycmF5KHUpLGQ9bmV3IEZsb2F0NjRBcnJheSh1KTtmb3IobGV0IHA9MDtwPHU7cCsrKXtsZXQgYj1hLmRhdGFbcF0sZj1wKnMuc2hhcGVbMV07Zm9yKGxldCBTPTA7UzxzLnNoYXBlWzFdO1MrKyliKz1lW1NdKnMuZGF0YVtmK1NdO2xbcF09YjtsZXQgeT1oLmRhdGFbcF0sSD1wKnIuc2hhcGVbMV07Zm9yKGxldCBTPTA7UzxjO1MrKyl5Kz1vW1NdKnIuZGF0YVtIK1NdO2RbcF09eX1sZXQgZz1uZXcgRmxvYXQ2NEFycmF5KGMpO2ZvcihsZXQgcD0wO3A8YztwKyspe2xldCBiPU90KGxbcF0rZFtwXSksZj1PdChsW2MrcF0rZFtjK3BdKSx5PU1hdGgudGFuaChsWzIqYytwXStiKmRbMipjK3BdKTtnW3BdPSgxLWYpKnkrZipvW3BdfXJldHVybiBnfWVtYmVkKGUsbyl7bGV0IHM9ZS5zaGFwZVsxXTtyZXR1cm4gZS5kYXRhLnN1YmFycmF5KG8qcyxvKnMrcyl9cHJlZGljdChlKXtsZXQgcz1bLi4uZSwiPC9zPiJdLm1hcChjPT50aGlzLmcyaWR4W2NdPz90aGlzLmcyaWR4WyI8dW5rPiJdKSxyPW5ldyBGbG9hdDY0QXJyYXkodGhpcy5IKTtmb3IobGV0IGMgb2YgcylyPXRoaXMuZ3J1Y2VsbCh0aGlzLmVtYmVkKHRoaXMudy5lbmNfZW1iLGMpLHIsdGhpcy53LmVuY193X2loLHRoaXMudy5lbmNfd19oaCx0aGlzLncuZW5jX2JfaWgsdGhpcy53LmVuY19iX2hoKTtsZXQgYT10aGlzLmVtYmVkKHRoaXMudy5kZWNfZW1iLDIpLGg9W107Zm9yKGxldCBjPTA7YzwyMDtjKyspe3I9dGhpcy5ncnVjZWxsKGEscix0aGlzLncuZGVjX3dfaWgsdGhpcy53LmRlY193X2hoLHRoaXMudy5kZWNfYl9paCx0aGlzLncuZGVjX2JfaGgpO2xldCB1PXRoaXMudy5mY193LnNoYXBlWzBdLGw9MCxkPS0xLzA7Zm9yKGxldCBnPTA7Zzx1O2crKyl7bGV0IHA9dGhpcy53LmZjX2IuZGF0YVtnXSxiPWcqdGhpcy5IO2ZvcihsZXQgZj0wO2Y8dGhpcy5IO2YrKylwKz1yW2ZdKnRoaXMudy5mY193LmRhdGFbYitmXTtwPmQmJihkPXAsbD1nKX1pZihsPT09MylicmVhaztoLnB1c2gobCksYT10aGlzLmVtYmVkKHRoaXMudy5kZWNfZW1iLGwpfXJldHVybiBoLm1hcChjPT50aGlzLmlkeDJwW2NdPz8iPHVuaz4iKX10b2tlbml6ZShlKXtyZXR1cm4gZS5tYXRjaCgvW2Etel1bYS16J1wtXSp8Wy4sPyFdL2cpfHxbXX1wcmVwcm9jZXNzKGUpe3JldHVybiBlPUR0KGUpLGU9ZS5ub3JtYWxpemUoIk5GRCIpLnJlcGxhY2UoL1vMgC3Nr10vZywiIiksZT1lLnRvTG93ZXJDYXNlKCksZT1lLnJlcGxhY2UoL1teIGEteicuLD8hXC1dL2csIiIpLGUucmVwbGFjZSgvaVwuZVwuL2csInRoYXQgaXMiKS5yZXBsYWNlKC9lXC5nXC4vZywiZm9yIGV4YW1wbGUiKX10ZXh0VG9Xb3JkcyhlKXtyZXR1cm4gdGhpcy50b2tlbml6ZSh0aGlzLnByZXByb2Nlc3MoZSkpfWNvbnZlcnQoZSl7ZT10aGlzLnByZXByb2Nlc3MoZSk7bGV0IG89dGhpcy50b2tlbml6ZShlKSxzPVtdO2ZvcihsZXQgciBvZiBvKXtsZXQgYTsvW2Etel0vLnRlc3Qocik/dGhpcy5ob21vZ3JhcGhzW3JdP2E9dGhpcy5ob21vZ3JhcGhzW3JdWzFdOnRoaXMuY211W3JdP2E9dGhpcy5jbXVbcl0uc3BsaXQoIiAiKTphPXRoaXMucHJlZGljdChyKTphPVtyXSxzLnB1c2goLi4uYSwiICIpfXJldHVybiBzLnBvcCgpLHN9fTt2YXIgTXQ9IltTSUxdIixDdD1uPT5uLnJlcGxhY2UoL1xkL2csIiIpLFE9Y2xhc3N7Y29uc3RydWN0b3IoZSxvKXtJKHRoaXMsInNpbElkeCIpO0kodGhpcywiaWQycGhvbmUiLHt9KTtJKHRoaXMsImcycCIpO0kodGhpcywidm9jYWIiKTt0aGlzLmcycD1lLHRoaXMudm9jYWI9byx0aGlzLnNpbElkeD1vW010XTtmb3IobGV0W3Mscl1vZiBPYmplY3QuZW50cmllcyhvKSl0aGlzLmlkMnBob25lW1N0cmluZyhyKV09c31nZXRQaG9uZXNBbmRXb3JkcyhlKXtsZXQgbz10aGlzLmcycC5jb252ZXJ0KGUpLHM9dGhpcy5nMnAudGV4dFRvV29yZHMoZSkscj1bXSxhPVtdO2ZvcihsZXQgbCBvZiBvKWw9PT0iICI/KGEubGVuZ3RoJiZyLnB1c2goYSksYT1bXSk6YS5wdXNoKGwpO2EubGVuZ3RoJiZyLnB1c2goYSk7bGV0IGg9W10sYz1bXSx1PU1hdGgubWluKHIubGVuZ3RoLHMubGVuZ3RoKTtmb3IobGV0IGw9MDtsPHU7bCsrKS9cdy8udGVzdChyW2xdWzBdKSYmKGgucHVzaChyW2xdKSxjLnB1c2goc1tsXSkpO3JldHVybntncm91cHM6aCx3b3JkczpjfX1hbGlnbldvcmRzKGUsbyxzKXtsZXQgcj1bXSxhPVtdO2ZvcihsZXQgbD0wO2w8by5sZW5ndGg7bCsrKWZvcihsZXQgZCBvZiBvW2xdKXIucHVzaChzW2xdKSxhLnB1c2goQ3QoZCkpO2xldCBoPVtdLGM9MDtmb3IobGV0IGwgb2YgZSl7aWYobFsyXT09PU10KXtoLnB1c2goW2wsTXRdKTtjb250aW51ZX1mb3IoO2M8YS5sZW5ndGgmJmxbMl0hPT1hW2NdOyljKys7aC5wdXNoKFtsLHJbY11dKX1sZXQgdT1bXTtmb3IobGV0IGw9MDtsPGgubGVuZ3RoOyl7bGV0IGQ9bDtmb3IoO2Q8aC5sZW5ndGgmJmhbZF1bMV09PT1oW2xdWzFdOylkKys7dS5wdXNoKFtoW2xdWzBdWzBdLGhbZC0xXVswXVsxXSxoW2xdWzFdXSksbD1kfXJldHVybiB1fWdldFBob25lSWRzKGUpe2xldCBzPWUuZmxhdCgpLm1hcChyPT50aGlzLnZvY2FiW0N0KHIpXSk7cmV0dXJuIHNbMF0hPT10aGlzLnNpbElkeCYmcy51bnNoaWZ0KHRoaXMuc2lsSWR4KSxzW3MubGVuZ3RoLTFdIT09dGhpcy5zaWxJZHgmJnMucHVzaCh0aGlzLnNpbElkeCksc319O3ZhciAkdD0iW1NJTF0iLE1lPW5ldyBTZXQoWyJbVU5LXSIsIltQQURdIiwiPHM+IiwiPC9zPiIsIiJdKSxYPW5ldyBTZXQoWyJBQSIsIkFFIiwiQUgiLCJBTyIsIkFXIiwiQVkiLCJFSCIsIkVSIiwiRVkiLCJJSCIsIklZIiwiT1ciLCJPWSIsIlVIIiwiVVciXSksR3Q9bmV3IFNldChbIlAiLCJUIiwiSyIsIkIiLCJEIiwiRyJdKSxIZT1uZXcgU2V0KFsiRiIsIlYiLCJUSCIsIkRIIiwiUyIsIloiLCJTSCIsIlpIIiwiSEgiXSksX2U9bmV3IFNldChbIk0iLCJOIiwiTkciXSksRWU9bmV3IFNldChbIkwiLCJSIiwiVyIsIlkiXSksRmU9bmV3IFNldChbIkNIIiwiSkgiXSksQnQ9bmV3IFNldChbIkFIIiwiSUgiLCJFUiIsIlVIIl0pLFV0PW5ldyBTZXQoWyJhIiwiYW4iLCJ0aGUiLCJvZiIsInRvIiwiYW5kIiwib3IiLCJidXQiLCJmb3IiLCJmcm9tIiwiYXQiLCJhcyIsImluIiwib24iLCJieSIsIndpdGgiLCJjYW4iLCJjb3VsZCIsIndvdWxkIiwic2hvdWxkIiwic2hhbGwiLCJ3aWxsIiwibXVzdCIsIm1heSIsIm1pZ2h0IiwiZG8iLCJkb2VzIiwiZGlkIiwiaGF2ZSIsImhhcyIsImhhZCIsImFtIiwiaXMiLCJhcmUiLCJ3YXMiLCJ3ZXJlIiwiYmUiLCJiZWVuIiwiYmVpbmciLCJ0aGF0IiwidGhhbiIsInRoZW4iLCJzb21lIiwiYW55IiwieW91IiwieW91ciIsImhpbSIsImhlciIsInRoZW0iLCJ1cyIsInRoZXJlIiwiaGUiLCJzaGUiLCJ3ZSIsInRoZXkiLCJpdCJdKSxOPXt9O2ZvcihsZXQgbiBvZiBYKU5bbl09MTEwO2ZvcihsZXQgbiBvZiBHdClOW25dPTcwO2ZvcihsZXQgbiBvZiBIZSlOW25dPTk1O2ZvcihsZXQgbiBvZiBfZSlOW25dPTgwO2ZvcihsZXQgbiBvZiBFZSlOW25dPTcwO2ZvcihsZXQgbiBvZiBGZSlOW25dPTExNTt2YXIgemU9e1RIOiJcdTAzQjggXHU5NzAwXHU4OTgxXHU4MjBDXHU1QzE2XHU4RjdCXHU4OUU2XHU0RTBBXHU5RjdGXHUzMDAxXHU5MDAxXHU2QzE0XHUzMDAyXHU1MjJCXHU4QkZCXHU2MjEwIHMgLyBmIC8gdFx1MzAwMiIsREg6Ilx4RjAgXHU2NjJGXHU2RDRBXHU3Njg0IHRoXHVGRjA4XHU4MjBDXHU1QzE2XHU4RjdCXHU4OUU2XHU0RTBBXHU5RjdGK1x1NThGMFx1NUUyNlx1NjMyRlx1NTJBOFx1RkYwOVx1MzAwMlx1NTIyQlx1OEJGQlx1NjIxMCBkIC8gelx1MzAwMiIsUjoiciBcdTgyMENcdTVDMTZcdTUzNzdcdThENzdcdTRGNDZcdTRFMERcdTc4QjBcdTRFMEFcdTk4OUFcdUZGMENcdTU2MzRcdTU1MDdcdTc1NjVcdTU3MDZcdTMwMDJcdTUyMkJcdThCRkJcdTYyMTAgbFx1RkYwOGwgXHU2NjJGXHU4MjBDXHU1QzE2XHU5ODc2XHU0RTBBXHU5RjdGXHU5Rjg4XHVGRjA5XHUzMDAyIixMOiJsIFx1ODIwQ1x1NUMxNlx1NjJCNVx1NEUwQVx1OUY3Rlx1OUY4OFx1MzAwMlx1OEJDRFx1NUMzRVx1NzY4NCBsIFx1NEU1Rlx1ODk4MVx1NjUzNlx1NTFGQVx1Njc2NVx1RkYwQ1x1NTIyQlx1NTQxRVx1NjM4OVx1MzAwMiIsVjoidiBcdTY2MkZcdTRFMEFcdTlGN0ZcdTU0QUNcdTRFMEJcdTU1MDdcdTc2ODRcdTZENEFcdTY0NjlcdTY0RTZcdTk3RjNcdTMwMDJcdTUyMkJcdThCRkJcdTYyMTAgd1x1RkYwOHcgXHU2NjJGXHU1M0NDXHU1NTA3XHU1NzA2XHU4RDc3XHVGRjA5XHUzMDAyIixXOiJ3IFx1NTNDQ1x1NTUwN1x1NjUzNlx1NTcwNlx1MzAwMVx1OEZDNVx1OTAxRlx1NkVEMVx1NUYwMFx1MzAwMlx1NTIyQlx1OEJGQlx1NjIxMCB2XHUzMDAyIixBRTonXHhFNiBcdTU2MzRcdTg5RDJcdTg5ODFcdTU0MTFcdTRFMjRcdThGQjlcdTYyQzlcdTVGMDBcdTMwMDFcdTRFMEJcdTVERjRcdTY1M0VcdTRGNEVcdUZGMENcdTRFQ0JcdTRFOEUiXHU1NTRBIlx1NTQ4QyJcdTU0Q0UiXHU0RTRCXHU5NUY0XHUzMDAyJyxFSDonZSBcdTVGMDBcdTUzRTNcdTZCRDQgXHhFNiBcdTVDMEZcdUZGMENcdTUyMkJcdThCRkJcdTYyMTAiXHU4QkY2Ilx1MzAwMicsSUg6J1x1MDI2QSBcdTY2MkZcdTc3RURcdTRGQzNcdTY1M0VcdTY3N0VcdTc2ODQiXHU4ODYzIlx1RkYwQ1x1NTIyQlx1NjJDOVx1OTU3Rlx1NjIxMCBpXHUwMkQwXHUzMDAyJyxJWTonaVx1MDJEMCBcdTYyNERcdTY2MkZcdTk1N0ZcdTgwMENcdTdEMjdcdTc2ODQiXHU4ODYzIlx1RkYwQ1x1OTcwMFx1ODk4MVx1NjJDOVx1OTU3Rlx1MzAwMicsVUg6J1x1MDI4QSBcdTY2MkZcdTc3RURcdTRGQzNcdTY1M0VcdTY3N0VcdTc2ODQiXHU0RTRDIlx1RkYwQ1x1NTIyQlx1OEJGQlx1NjIxMCB1XHUwMkQwXHUzMDAyJyxVVzoidVx1MDJEMCBcdTg5ODFcdTU3MDZcdTU1MDdcdTVFNzZcdTYyQzlcdTk1N0ZcdTMwMDIiLEFIOiJcdTAyNTkgXHU2NjJGXHU2NTNFXHU2NzdFXHU3Njg0XHU1OTJFXHU1MTQzXHU5N0YzXHVGRjBDXHU1MUUwXHU0RTRFXHU0RTBEXHU5NzAwXHU4OTgxXHU3NTI4XHU1MjlCXHUyMDE0XHUyMDE0XHU4RkQ5XHU2QjYzXHU2NjJGXHU1RjMxXHU4QkZCXHU3Njg0XHU1MTczXHU5NTJFXHUzMDAyIixFUjoiXHUwMjVDXHUwMkQwciAvIFx1MDI1OXIgXHU4MjBDXHU1QzE2XHU1Mzc3XHU4RDc3XHVGRjBDXHU1RTM4XHU4OUMxXHU0RThFIGZvciAvIGhlciAvIHdvcmRcdTMwMDIiLE5HOiJcdTAxNEIgXHU4MjBDXHU2ODM5XHU2MkFDXHU4RDc3XHU2MkI1XHU4RjZGXHU5ODlBXHVGRjBDXHU1MjJCXHU1NzI4XHU4QkNEXHU1QzNFXHU1MkEwXHU0RTAwXHU0RTJBIGdcdTMwMDIiLE46Im4gXHU4MjBDXHU1QzE2XHU2MkI1XHU5RjdGXHU5Rjg4XHVGRjFCXHU4QkNEXHU1QzNFXHU4OTgxXHU2NTM2XHU0RjRGXHUzMDAyIixBQTonXHUwMjUxXHUwMkQwIFx1NTNFM1x1ODE1NFx1NUYyMFx1NTkyN1x1MzAwMVx1OTc2MFx1NTQwRVx1NzY4NCJcdTU1NEEiXHUzMDAyJyxBTzoiXHUwMjU0XHUwMkQwIFx1NTcwNlx1NTUwN1x1MzAwMVx1NTNFM1x1NTc4Qlx1NkJENCBcdTAyNTFcdTAyRDAgXHU1QzBGXHUzMDAyIixFWToiZVx1MDI2QSBcdTY2MkZcdTUzQ0NcdTUxNDNcdTk3RjNcdUZGMENcdTg5ODFcdTY3MDlcdTRFQ0UgZSBcdTUyMzAgXHUwMjZBIFx1NzY4NFx1NkVEMVx1NTJBOFx1MzAwMiIsT1c6Im9cdTAyOEEgXHU2NjJGXHU1M0NDXHU1MTQzXHU5N0YzXHVGRjBDXHU4OTgxXHU2NzA5XHU0RUNFIG8gXHU1MjMwIFx1MDI4QSBcdTc2ODRcdTZFRDFcdTUyQThcdTMwMDIiLEFZOiJhXHUwMjZBIFx1NjYyRlx1NTNDQ1x1NTE0M1x1OTdGM1x1RkYwQ1x1ODk4MVx1NkVEMVx1NTJBOFx1MzAwMiIsQVc6ImFcdTAyOEEgXHU2NjJGXHU1M0NDXHU1MTQzXHU5N0YzXHVGRjBDXHU4OTgxXHU2RUQxXHU1MkE4XHUzMDAyIixPWToiXHUwMjU0XHUwMjZBIFx1NjYyRlx1NTNDQ1x1NTE0M1x1OTdGM1x1RkYwQ1x1ODk4MVx1NkVEMVx1NTJBOFx1MzAwMiIsWkg6Ilx1MDI5MiBcdTY2MkZcdTZENEFcdTc2ODQgc2hcdUZGMDhcdTU5ODIgdXN1YWwgXHU5MUNDXHU3Njg0IHNcdUZGMDlcdTMwMDIiLFNIOiJcdTAyODMgXHU1M0NDXHU1NTA3XHU3NTY1XHU1MjREXHU3QTgxXHUzMDAxXHU4MjBDXHU5NzYyXHU2MkFDXHU1NDExXHU3ODZDXHU5ODlBXHUzMDAyIixKSDoiZFx1MDI5MiBcdTY2MkZcdTZENEFcdTc2ODQgY2hcdUZGMENcdTg5ODFcdTY3MDlcdTk2M0JcdTU4NUUrXHU2NDY5XHU2NEU2XHUzMDAyIixDSDoidFx1MDI4MyBcdTY2MkZcdTZFMDVcdTU4NUVcdTY0RTZcdTk3RjNcdUZGMENcdTUxNDhcdTk2M0JcdTU4NUVcdTUxOERcdTY0NjlcdTY0RTZcdTMwMDIiLFM6InMgXHU4MjBDXHU1QzE2XHU2M0E1XHU4RkQxXHU5RjdGXHU5Rjg4XHUzMDAxXHU2QzE0XHU2RDQxXHU0RUNFXHU3QTg0XHU3RjFEXHU2MzI0XHU1MUZBXHVGRjBDXHU1OEYwXHU1RTI2XHU0RTBEXHU2MzJGXHU1MkE4XHUzMDAyIixaOiJ6IFx1NjYyRlx1NkQ0QVx1NzY4NCBzXHVGRjBDXHU1OEYwXHU1RTI2XHU4OTgxXHU2MzJGXHU1MkE4XHUzMDAyIixUOiJ0IFx1ODIwQ1x1NUMxNlx1NjJCNVx1OUY3Rlx1OUY4OFx1NTQwRVx1NzIwNlx1NzgzNFx1RkYwQ1x1OEJDRFx1NUMzRVx1NEU1Rlx1ODk4MVx1OTAwMVx1NkMxNC9cdTYyMTBcdTk2M0JcdTMwMDIiLEQ6ImQgXHU2NjJGXHU2RDRBXHU3Njg0IHRcdTMwMDIiLEs6ImsgXHU4MjBDXHU2ODM5XHU2MkI1XHU4RjZGXHU5ODlBXHU3MjA2XHU3ODM0XHUzMDAyIixHOiJnIFx1NjYyRlx1NkQ0QVx1NzY4NCBrXHUzMDAyIixQOiJwIFx1NTNDQ1x1NTUwN1x1OTVFRFx1NTQwOFx1NTQwRVx1NzIwNlx1NzgzNFx1RkYwQ1x1OEJDRFx1NUMzRVx1NTIyQlx1NTQxRVx1MzAwMiIsQjoiYiBcdTY2MkZcdTZENEFcdTc2ODQgcFx1MzAwMiIsRjoiZiBcdTRFMEFcdTlGN0ZcdTU0QUNcdTRFMEJcdTU1MDdcdTMwMDFcdTkwMDFcdTZDMTRcdTMwMDFcdTU4RjBcdTVFMjZcdTRFMERcdTYzMkZcdTUyQThcdTMwMDIiLE06Im0gXHU1M0NDXHU1NTA3XHU5NUVEXHU1NDA4XHUzMDAxXHU2QzE0XHU2RDQxXHU0RUNFXHU5RjNCXHU4MTU0XHU4RDcwXHUzMDAyIn0sVGU9LjI4LHZlPS4xOCxQZT00LFZ0PTg0O2Z1bmN0aW9uIGplKG4pe3JldHVybiAxLygxK01hdGguZXhwKC1uKSl9ZnVuY3Rpb24gUmUobixlLG8pe2xldCBzPTEwMCpqZSgobi1UZSkvdmUpLHI9TWF0aC5taW4oMSxlL1BlKTtyZXR1cm4gcz1zKnIrVnQqKDEtciksbzwuMyYmKHM9cyouNTUrVnQqLjQ1KSxvPC42JiYocz1NYXRoLm1heChzLDYwKSksTWF0aC5tYXgoMCxNYXRoLm1pbigxMDAscykpfXZhciBZdD17QUE6WyJBTyJdLEFPOlsiQUEiXSxBSDpbIkVSIiwiQUEiLCJVSCIsIklIIl0sRVI6WyJBSCIsIlIiLCJVSCJdLFVIOlsiQUgiLCJVVyJdLFVXOlsiVUgiXSxJSDpbIklZIiwiQUgiLCJFSCJdLElZOlsiSUgiXSxFSDpbIkFFIiwiSUgiXSxBRTpbIkVIIl0sUjpbIkVSIl0sREg6WyJUSCIsIkQiXSxUSDpbIkRIIiwiRiJdLFY6WyJGIiwiVyJdLEY6WyJWIl0sWjpbIlMiXSxTOlsiWiJdLEI6WyJQIiwiViJdLFA6WyJCIl0sRDpbIlQiXSxUOlsiRCJdLEc6WyJLIl0sSzpbIkciXSxNOlsiTiJdLE5HOlsiTiJdLE46WyJORyIsIk0iXSxMOlsiUiJdLFc6WyJWIl0sSkg6WyJDSCIsIlpIIl0sQ0g6WyJKSCIsIlNIIl0sWkg6WyJTSCIsIkpIIl0sU0g6WyJaSCIsIkNIIl19LExlPTg4O2Z1bmN0aW9uIE5lKG4sZSxvKXtpZihuPT09ZSlyZXR1cm4iZXhhY3QiO2lmKG8uaXNGdW5jJiZYLmhhcyhuKSYmKFguaGFzKGUpfHxlPT09IlIiKSlyZXR1cm4ibmVhciI7bGV0IHM9WXRbbl07aWYoIXN8fCFzLmluY2x1ZGVzKGUpKXJldHVybiJ3cm9uZyI7bGV0IHI9by5pbldvcmQ9PT1vLm5JbldvcmQtMSxhPW8uaW5Xb3JkPT09MDtyZXR1cm4obj09PSJOInx8bj09PSJORyJ8fG49PT0iTSIpJiZhfHwobj09PSJUInx8bj09PSJEIikmJmEmJiFyPyJ3cm9uZyI6Im5lYXIifWZ1bmN0aW9uIE9lKG4sZSxvLHMpe2xldCByPVtdLGE9LTE7Zm9yKGxldCBoPTA7aDxuLmxlbmd0aDtoKyspe2xldCBjPW5baF07aWYoYz09PWF8fChhPWMsYz09PW8pKWNvbnRpbnVlO2xldCB1PWVbU3RyaW5nKGMpXTshdXx8cy5oYXModSl8fHIucHVzaCh1KX1yZXR1cm4gcn1mdW5jdGlvbiBXZShuLGUsbyl7aWYobj09PWUpcmV0dXJuITA7bGV0IHM9WXRbbl07aWYoIXN8fCFzLmluY2x1ZGVzKGUpKXJldHVybiExO2lmKCFvKXJldHVybiEwO2xldCByPW8uaW5Xb3JkPT09MDtyZXR1cm4hKChuPT09Ik4ifHxuPT09Ik5HInx8bj09PSJNIikmJnJ8fChuPT09IlQifHxuPT09IkQiKSYmciYmby5pbldvcmQhPT1vLm5JbldvcmQtMSl9ZnVuY3Rpb24gRGUobixlLG8pe2xldCBzPW4ubGVuZ3RoLHI9ZS5sZW5ndGgsYT1uZXcgSW50MzJBcnJheSgocysxKSoocisxKSksaD1uZXcgVWludDhBcnJheSgocysxKSoocisxKSk7Zm9yKGxldCBmPTA7Zjw9cztmKyspYVtmKihyKzEpXT1mO2ZvcihsZXQgZj0wO2Y8PXI7ZisrKWFbZl09Zjtmb3IobGV0IGY9MTtmPD1zO2YrKylmb3IobGV0IHk9MTt5PD1yO3krKyl7bGV0IEg9byYmbyhmLTEseS0xKXx8bltmLTFdPT09ZVt5LTFdPzA6MSxTPWFbKGYtMSkqKHIrMSkrKHktMSldK0gsXz0wLEI9YVsoZi0xKSoocisxKSt5XSsxLHY9YVtmKihyKzEpKyh5LTEpXSsxO0I8UyYmKFM9QixfPTEpLHY8UyYmKFM9dixfPTIpLGFbZioocisxKSt5XT1TLGhbZioocisxKSt5XT1ffWxldCBjPXMsdT1yLGw9MCxkPTAsZz0wLHA9MCxiPVtdO2Zvcig7Yz4wfHx1PjA7KXtsZXQgZj1jPT09MD8yOnU9PT0wPzE6aFtjKihyKzEpK3VdO2Y9PT0wPyhuW2MtMV09PT1lW3UtMV18fG8mJm8oYy0xLHUtMSk/bCsrOihkKyssYi5wdXNoKHtyZWY6bltjLTFdLHNhaWQ6ZVt1LTFdfSkpLGMtLSx1LS0pOmY9PT0xPyhnKyssYy0tKToocCsrLHUtLSl9cmV0dXJue3NhbWU6bCxzdWI6ZCxkZWw6ZyxpbnM6cCxzdWJzOmIucmV2ZXJzZSgpfX1mdW5jdGlvbiBLdChuLGUsbyxzLHIpe2xldHtncm91cHM6YSx3b3JkczpoLGlkMnBob25lOmMsc2lsSWR4OnUscmVzb2x1dGlvbjpsPS4wMSxwdW5jdEFmdGVyOmQ9W119PXIsZz1uZXcgSW50MzJBcnJheShlKSxwPW5ldyBGbG9hdDMyQXJyYXkoZSk7Zm9yKGxldCB0PTA7dDxlO3QrKyl7bGV0IGk9MCx3PS0xLzAsbT10Km87Zm9yKGxldCB4PTA7eDxvO3grKyl7bGV0IGs9blttK3hdO2s+dyYmKHc9ayxpPXgpfWdbdF09aSxwW3RdPXd9bGV0IGI9bmV3IEludDMyQXJyYXkoZSk7Zm9yKGxldCB0PTA7dDxlOyl7bGV0IGk9dDtmb3IoO2k8ZSYmZ1tpXT09PWdbdF07KWkrKztsZXQgdz1nW3RdPT09dSYmaS10PDQ7Zm9yKGxldCBtPXQ7bTxpO20rKyliW21dPXc/LTE6Z1t0XTt0PWl9bGV0IGY9W107Zm9yKGxldCB0PTA7dDxlO3QrKyliW3RdIT09dSYmZi5wdXNoKHQpO2xldCB5PXMuc2xpY2UoMSwtMSksSD1uZXcgRmxvYXQzMkFycmF5KGYubGVuZ3RoKm8pO2ZvcihsZXQgdD0wO3Q8Zi5sZW5ndGg7dCsrKUguc2V0KG4uc3ViYXJyYXkoZlt0XSpvLGZbdF0qbytvKSx0Km8pO2xldCBTPUl0KEgsZi5sZW5ndGgsbyx5KSxfPVtdO2ZvcihsZXQgdD0wO3Q8YS5sZW5ndGg7dCsrKWZvcihsZXQgaT0wO2k8YVt0XS5sZW5ndGg7aSsrKXtsZXQgdz1hW3RdW2ldLG09dy5yZXBsYWNlKC9cZC9nLCIiKSx4PS9cZC8udGVzdCh3KT9OdW1iZXIody5yZXBsYWNlKC9cRC9nLCIiKSk6bnVsbCxrPVV0LmhhcyhTdHJpbmcoaFt0XSkudG9Mb3dlckNhc2UoKS5yZXBsYWNlKC9bXmEteiddL2csIiIpKTtfLnB1c2goe3dvcmQ6aFt0XSx3b3JkSW5kZXg6dCxiYXJlOm0sZnVsbDp3LHN0cmVzczp4LGluV29yZDppLG5JbldvcmQ6YVt0XS5sZW5ndGgsaXNGdW5jOmt9KX1sZXQgQj15Lmxlbmd0aCx2PXkubWFwKHQ9PmNbU3RyaW5nKHQpXXx8Ij8iKSxmdD1PZShnLGMsdSxNZSksaj1EZSh2LGZ0LCh0LGkpPT5XZSh2W3RdLGZ0W2ldLF9bdF0pKSxVPWouc2FtZS9NYXRoLm1heCgxLHYubGVuZ3RoKSxlZT0oai5zdWIrai5kZWwrai5pbnMpL01hdGgubWF4KDEsdi5sZW5ndGgpLG5lPVU8LjYscHQ9QXJyYXkuZnJvbSh7bGVuZ3RoOkJ9LCgpPT5bXSk7Zm9yKGxldCB0PTA7dDxmLmxlbmd0aDt0KyspcHRbU1t0XV0ucHVzaChmW3RdKTtsZXQgej1bXTtmb3IobGV0IHQ9MDt0PEI7dCsrKXtsZXQgaT1wdFt0XSx3PXlbdF0sbT0wLHg9MCxrPTAsTT1uZXcgRmxvYXQ2NEFycmF5KG8pO2ZvcihsZXQgUCBvZiBpKXtsZXQgJD1QKm8sTHQ9blskK3ddLE50PXBbUF18fDFlLTk7bSs9TWF0aC5sb2coKEx0KzFlLTkpLyhOdCsxZS05KSkseCs9THQsays9TnQ7Zm9yKGxldCBpdD0wO2l0PG87aXQrKylNW2l0XSs9blskK2l0XX1sZXQgRT1NYXRoLm1heCgxLGkubGVuZ3RoKSxZPW0vRSxUPXgvRSxSPWsvRSxGPXcsQz0tMTtmb3IobGV0IFA9MDtQPG87UCsrKXtpZihQPT09dSljb250aW51ZTtsZXQgJD1jW1N0cmluZyhQKV07JD09PSJbVU5LXSJ8fCQ9PT0iW1BBRF0ifHwkPT09IjxzPiJ8fCQ9PT0iPC9zPiJ8fE1bUF0+QyYmKEM9TVtQXSxGPVApfWxldCBqdD1jW1N0cmluZyhGKV18fCI/IixTdD1pLmxlbmd0aD9pWzBdKmw6dD09PTA/MDp6W3QtMV0uZW5kLFJ0PWkubGVuZ3RoPyhpW2kubGVuZ3RoLTFdKzEpKmw6U3QsQXQ9TmUoX1t0XS5iYXJlLGp0LF9bdF0pLEo9UmUoVCxpLmxlbmd0aCxSKTtBdD09PSJuZWFyIiYmKEo9TWF0aC5tYXgoSixMZSkpLEF0PT09Indyb25nIiYmQnQuaGFzKF9bdF0uYmFyZSkmJl9bdF0uc3RyZXNzPT09MCYmKEo9TWF0aC5tYXgoSiw3OCkpLHoucHVzaCh7Li4uX1t0XSxpbmRleDp0LHN0YXJ0OitTdC50b0ZpeGVkKDMpLGVuZDorUnQudG9GaXhlZCgzKSxkdXI6KyhSdC1TdCkudG9GaXhlZCgzKSxmcmFtZXM6aS5sZW5ndGgsZ29wOitZLnRvRml4ZWQoMyksbWVhblA6K1QudG9GaXhlZCg0KSxtYXhQOitSLnRvRml4ZWQoNCkscHJvZHVjZWQ6anQsdmFyaWFudDpBdCxzY29yZTpNYXRoLnJvdW5kKEopLHJlbGlhYmxlOmkubGVuZ3RoPj0yfSl9bGV0IEE9W10sZXQ9bmV3IE1hcDtmb3IobGV0IHQgb2YgeilldC5oYXModC53b3JkSW5kZXgpfHxldC5zZXQodC53b3JkSW5kZXgsW10pLGV0LmdldCh0LndvcmRJbmRleCkucHVzaCh0KTtmb3IobGV0W3QsaV1vZlsuLi5ldC5lbnRyaWVzKCldLnNvcnQoKHcsbSk9PndbMF0tbVswXSkpe2xldCB3PTAsbT0wO2ZvcihsZXQgayBvZiBpKXtsZXQgTT1NYXRoLm1heCgxLGsuZnJhbWVzKTt3Kz1rLnNjb3JlKk0sbSs9TX1sZXQgeD1NYXRoLnJvdW5kKHcvTWF0aC5tYXgoMSxtKSk7QS5wdXNoKHt3b3JkOmhbdF0sd29yZEluZGV4OnQsc3RhcnQ6aVswXS5zdGFydCxlbmQ6aVtpLmxlbmd0aC0xXS5lbmQsZHVyOisoaVtpLmxlbmd0aC0xXS5lbmQtaVswXS5zdGFydCkudG9GaXhlZCgzKSxzY29yZTp4LHBob25lczppLHdlYWs6bnVsbCxsaW5rOm51bGx9KX1sZXQgbnQ9W107Zm9yKGxldCB0PTA7dDxlOyl7aWYoYlt0XSE9PXUpe3QrKztjb250aW51ZX1sZXQgaT10O2Zvcig7aTxlJiZiW2ldPT09dTspaSsrO250LnB1c2goe3N0YXJ0OisodCpsKS50b0ZpeGVkKDMpLGVuZDorKGkqbCkudG9GaXhlZCgzKSxkdXI6KygoaS10KSpsKS50b0ZpeGVkKDMpfSksdD1pfWxldCBvZT1BLmxlbmd0aD9BWzBdLnN0YXJ0OjAsc2U9QS5sZW5ndGg/QVtBLmxlbmd0aC0xXS5lbmQ6MCxndD1udC5maWx0ZXIodD0+dC5zdGFydD5vZSsuMDImJnQuZW5kPHNlLS4wMiYmdC5kdXI+PS4yMiksSHQ9ei5maWx0ZXIodD0+dC5mcmFtZXM+PTIpLF90PUh0Lmxlbmd0aD9IdDp6LHJlPU1hdGgucm91bmQoX3QucmVkdWNlKCh0LGkpPT50K2kuc2NvcmUsMCkvTWF0aC5tYXgoMSxfdC5sZW5ndGgpKSxpZT16LnJlZHVjZSgodCxpKT0+dCsoTltpLmJhcmVdfHw5MCkvMWUzLDApLG10PXoucmVkdWNlKCh0LGkpPT50K2kuZHVyLDApLGFlPU1hdGgubWF4KDAsMS1tdC9NYXRoLm1heCguMDAxLGllKi43KSksd3Q9MTAwKigxLWouZGVsL01hdGgubWF4KDEsdi5sZW5ndGgpKSooMS1hZSouNSk7d3Q9TWF0aC5yb3VuZChNYXRoLm1heCgwLE1hdGgubWluKDEwMCx3dCkpKTtsZXQgVj1tdD4wP3oubGVuZ3RoL210OjAsTz0xMDA7Zm9yKGxldCB0IG9mIGd0KU8tPXQuZHVyPjEuMj8xODp0LmR1cj4uNj8xMTp0LmR1cj4uMzU/NjozO1Y+MCYmKFY8Ni41JiYoTy09TWF0aC5taW4oMjIsKDYuNS1WKSo2KSksVj4xNiYmKE8tPU1hdGgubWluKDE0LChWLTE2KSozKSkpO2xldCBjZT16LmZpbHRlcih0PT50LmR1cioxZTM+KE5bdC5iYXJlXXx8OTApKjMpLmxlbmd0aDtPLT1NYXRoLm1pbigxNSxjZSoyKSxPPU1hdGgucm91bmQoTWF0aC5tYXgoMCxNYXRoLm1pbigxMDAsTykpKTtsZXQgRXQ9dD0+WC5oYXModCksVz1bXTtmb3IobGV0IHQ9MDt0PEEubGVuZ3RoLTE7dCsrKXtpZihkW3RdKWNvbnRpbnVlO2xldCBpPUFbdF0sdz1BW3QrMV0sbT1bLi4uaS5waG9uZXNdLnJldmVyc2UoKS5maW5kKEY9PkYuYmFyZSE9PSR0KSx4PXcucGhvbmVzLmZpbmQoRj0+Ri5iYXJlIT09JHQpO2lmKCFtfHwheCljb250aW51ZTtsZXQgaz1FdChtLmJhcmUpLE09RXQoeC5iYXJlKSxFPW51bGw7aWYoIWsmJk0/RT0iQytWIjprJiZNP0U9IlYrViI6IWsmJiFNJiZHdC5oYXMobS5iYXJlKSYmKEU9InN0b3ArQyIpLCFFKWNvbnRpbnVlO2xldCBZPSsody5zdGFydC1pLmVuZCkudG9GaXhlZCgzKSxUPVk8PS4wNixSPXtmcm9tOmkud29yZCx0bzp3LndvcmQsa2luZDpFLGZyb21fcGhvbmU6bS5iYXJlLHRvX3Bob25lOnguYmFyZSxnYXA6WSxsaW5rZWQ6VCxoaW50OlQ/IiI6RT09PSJzdG9wK0MiP2BcdTIwMUMke20uYmFyZX1cdTIwMURcdTc4QjBcdTRFMEFcdTU0MEVcdTk3NjJcdTc2ODQgJHt4LmJhcmV9XHVGRjFBJHttLmJhcmV9IFx1NTNFQVx1NjIxMFx1OTYzQlx1NEUwRFx1NzIwNlx1NzgzNFx1RkYwQ1x1NzZGNFx1NjNBNVx1NjNBNVx1NEUwQSAke3guYmFyZX1cdTMwMDJgOmBcdTIwMUMke20uYmFyZX0gXHUyMTkyICR7eC5iYXJlfVx1MjAxRFx1NEU0Qlx1OTVGNFx1NjVBRFx1NUYwMFx1NEU4Nlx1RkYwQ1x1NjI4QSAke20uYmFyZX0gXHU3NkY0XHU2M0E1XHU2RUQxXHU4RkRCICR7eC5iYXJlfVx1RkYwQ1x1NEUyRFx1OTVGNFx1NTIyQlx1NTA1Q1x1MzAwMmB9O1cucHVzaChSKSxpLmxpbms9Uix3LmxpbmtGcm9tPVJ9bGV0IEZ0PW51bGw7aWYoVy5sZW5ndGgpe2xldCB0PTEwMCpXLmZpbHRlcihpPT5pLmxpbmtlZCkubGVuZ3RoL1cubGVuZ3RoO0Z0PU1hdGgucm91bmQoVy5sZW5ndGg+PTM/dDp0Ki41Kzc1Ki41KX1sZXQgbGU9QS5yZWR1Y2UoKHQsaSk9PnQraS5kdXIsMCkvTWF0aC5tYXgoMSxBLmxlbmd0aCksRD1bXTtmb3IobGV0IHQgb2YgQSl7bGV0IGk9dC53b3JkLnRvTG93ZXJDYXNlKCkucmVwbGFjZSgvW15hLXonXS9nLCIiKTtpZighVXQuaGFzKGkpfHx0LmR1cj5sZSoxLjUpY29udGludWU7bGV0IHc9dC5waG9uZXMuZmlsdGVyKFQ9PlguaGFzKFQuYmFyZSkmJlQuc3RyZXNzIT09bnVsbCYmVC5zdHJlc3M+MCk7aWYoIXcubGVuZ3RoKWNvbnRpbnVlO2xldCBtPXdbMF07aWYoIW0uZnJhbWVzKWNvbnRpbnVlO2xldCB4PW0saz0wLE09MDtmb3IobGV0IFQgb2YgcHRbbS5pbmRleF0pe2xldCBSPVQqbztmb3IobGV0IEY9MDtGPG87RisrKXtsZXQgQz1jW1N0cmluZyhGKV07QyYmKEM9PT14LmJhcmU/ays9bltSK0ZdOihCdC5oYXMoQyl8fEM9PT0iUiImJnguYmFyZSE9PSJFUiIpJiYoTSs9bltSK0ZdKSl9fWxldCBFPU0+ayxZPU0vTWF0aC5tYXgoMWUtOSxrK00pO3Qud2Vhaz17d29yZDp0LndvcmQsdm93ZWw6eC5iYXJlLHByb2R1Y2VkOngucHJvZHVjZWQscmVkdWNlZDpFLHJhdGlvOitZLnRvRml4ZWQoMyl9LEQucHVzaCh0LndlYWspfWxldCBoZT1ELmxlbmd0aD9ELmZpbHRlcih0PT50LnJlZHVjZWQpLmxlbmd0aC9ELmxlbmd0aDowLHVlPUQubGVuZ3RoP01hdGgucm91bmQoMTAwKiguNisuNCpoZSkpOm51bGwseXQ9bmV3IFNldDtmb3IobGV0IHQ9MDt0PEEubGVuZ3RoO3QrKylkW3RdJiZ5dC5hZGQodCk7bGV0IG90PVtdLHp0PW5ldyBTZXQ7Zm9yKGxldCB0IG9mIGd0KXtsZXQgaT0tMTtmb3IobGV0IG09MDttPEEubGVuZ3RoO20rKylBW21dLmVuZDw9dC5zdGFydCsuMDImJihpPW0pO3l0LmhhcyhpKT96dC5hZGQoaSk6b3QucHVzaCh7a2luZDoidW5leHBlY3RlZCIsYWZ0ZXI6aT49MD9BW2ldLndvcmQ6IiIsc3RhcnQ6dC5zdGFydCxkdXI6dC5kdXJ9KX1sZXQgeHQ9W107Zm9yKGxldCB0IG9mIHl0KXtpZih6dC5oYXModCkpY29udGludWU7bGV0IGk9QVt0KzFdO2kmJnh0LnB1c2goe2tpbmQ6Im1pc3NpbmciLGFmdGVyOkFbdF0ud29yZCxuZXh0Omkud29yZH0pfWxldCBaPTEwMDtaLT1vdC5sZW5ndGgqMTIsWi09eHQubGVuZ3RoKjQsWj1NYXRoLnJvdW5kKE1hdGgubWF4KDAsTWF0aC5taW4oMTAwLFopKSk7bGV0IHN0PXthY2N1cmFjeTpyZSxjb21wbGV0ZW5lc3M6d3QsZmx1ZW5jeTpPLGxpbmtpbmc6RnQsd2Vhazp1ZSx0aG91Z2h0Olp9LGJ0PXthY2N1cmFjeTouNCxjb21wbGV0ZW5lc3M6LjEzLGZsdWVuY3k6LjEzLGxpbmtpbmc6LjEyLHdlYWs6LjEyLHRob3VnaHQ6LjF9LFR0PTAsdnQ9MDtmb3IobGV0IHQgb2YgT2JqZWN0LmtleXMoYnQpKXN0W3RdPT09bnVsbHx8c3RbdF09PT12b2lkIDB8fChUdCs9c3RbdF0qYnRbdF0sdnQrPWJ0W3RdKTtsZXQgcnQ9TWF0aC5yb3VuZChUdC9NYXRoLm1heCgxZS05LHZ0KSk7aWYoVTwuNzUpe2xldCB0PVU8LjU1P01hdGgucm91bmQoVSo4MCk6TWF0aC5yb3VuZCg1NSsoVS0uNTUpLy4yKjIwKTtydD1NYXRoLm1pbihydCx0KX1sZXQgRz1bXSxQdD1bXTtmb3IobGV0IHQgb2YgeilpZighKCF0LnJlbGlhYmxlfHx0LmZyYW1lczwyKSl7aWYodC52YXJpYW50PT09Im5lYXIiKXtQdC5wdXNoKHt3b3JkOnQud29yZCxleHBlY3RlZDp0LmJhcmUscHJvZHVjZWQ6dC5wcm9kdWNlZH0pO2NvbnRpbnVlfXQudmFyaWFudCE9PSJleGFjdCImJih0LnNjb3JlPj03Mnx8Ry5wdXNoKHtraW5kOiJwaG9uZW1lIix3b3JkOnQud29yZCxleHBlY3RlZDp0LmJhcmUscHJvZHVjZWQ6dC5wcm9kdWNlZCxzY29yZTp0LnNjb3JlLGdvcDp0LmdvcCx0aXA6emVbdC5iYXJlXXx8YFx1MjAxQyR7dC5iYXJlfVx1MjAxRFx1OEZEOVx1NEUyQVx1OTdGM1x1NkEyMVx1NTc4Qlx1NkNBMVx1NTQyQ1x1NkUwNVx1RkYwQ1x1NjUzRVx1NjE2Mlx1NTE4RFx1OEJGQlx1NEUwMFx1NkIyMVx1OEJENVx1OEJENVx1MzAwMmB9KSl9Ry5zb3J0KCh0LGkpPT50LnNjb3JlLWkuc2NvcmUpO2ZvcihsZXQgdCBvZiBvdClHLnB1c2goe2tpbmQ6InBhdXNlIix3b3JkOnQuYWZ0ZXIsdGlwOmBcdTU3MjggXHUyMDFDJHt0LmFmdGVyfVx1MjAxRCBcdTRFNEJcdTU0MEVcdTUwNUNcdTRFODYgJHt0LmR1ci50b0ZpeGVkKDIpfXNcdUZGMENcdThGRDlcdTkxQ0NcdTY2MkZcdTUzRTVcdTRFMkRcdUZGMENcdTUyMkJcdTY1QURcdTUzRTVcdTMwMDJgfSk7Zm9yKGxldCB0IG9mIFcuZmlsdGVyKGk9PiFpLmxpbmtlZCkpRy5wdXNoKHtraW5kOiJsaW5rIix3b3JkOmAke3QuZnJvbX0gXHUyMTkyICR7dC50b31gLHRpcDp0LmhpbnR9KTtmb3IobGV0IHQgb2YgRC5maWx0ZXIoaT0+IWkucmVkdWNlZCkuc2xpY2UoMCwzKSlHLnB1c2goe2tpbmQ6IndlYWsiLHdvcmQ6dC53b3JkLHRpcDpgXHUyMDFDJHt0LndvcmR9XHUyMDFEXHU4RkQ5XHU5MUNDXHU3NTI4XHU0RTg2XHU1RjNBXHU4QkZCXHUzMDAyXHU1M0UzXHU4QkVEXHU5MUNDXHU1QjgzXHU5MDFBXHU1RTM4XHU1RjMxXHU4QkZCXHU2MjEwXHU1M0M4XHU4RjdCXHU1M0M4XHU3N0VEXHU3Njg0XHU1OTJFXHU1MTQzXHU5N0YzXHUyMDE0XHUyMDE0XHU5NjY0XHU5NzVFXHU0RjYwXHU2NzA5XHU2MTBGXHU1RjNBXHU4QzAzXHUzMDAyYH0pO3JldHVybntvdmVyYWxsOnJ0LGxldmVsOkNlKHJ0KSxkaW1zOnN0LHdvcmRzOkEubWFwKHQ9Pih7d29yZDp0LndvcmQsc3RhcnQ6dC5zdGFydCxlbmQ6dC5lbmQsZHVyOnQuZHVyLHNjb3JlOnQuc2NvcmUsd2Vhazp0LndlYWssbGlua2VkVG86dC5saW5rP3t0bzp0LmxpbmsudG8sbGlua2VkOnQubGluay5saW5rZWR9Om51bGwscGhvbmVzOnQucGhvbmVzLm1hcChpPT4oe3A6aS5iYXJlLGZ1bGw6aS5mdWxsLHN0YXJ0Omkuc3RhcnQsZW5kOmkuZW5kLGR1cjppLmR1cixzY29yZTppLnNjb3JlLHByb2R1Y2VkOmkucHJvZHVjZWQsZ29wOmkuZ29wLG1lYW5QOmkubWVhblAsbWF4UDppLm1heFAsZnJhbWVzOmkuZnJhbWVzLHN0cmVzczppLnN0cmVzc30pKX0pKSxwYXVzZXM6bnQsaW50ZXJuYWxQYXVzZXM6Z3QsbGlua1BhaXJzOlcsd2Vha1dvcmRzOkQsYnJlYWtJc3N1ZXM6b3QsbWlzc2luZ0JyZWFrczp4dCxpc3N1ZXM6Ry5zbGljZSgwLDEyKSx2YXJpYW50c0FjY2VwdGVkOlB0LGF1ZGlvTWlzbWF0Y2g6bmUsY29udGVudDp7cmF0ZTorVS50b0ZpeGVkKDMpLHBlcjorZWUudG9GaXhlZCgzKSxtYXRjaGVkOmouc2FtZSxtaXNzaW5nOmouZGVsLGV4dHJhOmouaW5zLHdyb25nOmouc3ViLHJlZkxlbjp2Lmxlbmd0aCxkZWNvZGVkOmZ0LHJlZjp2fSxzdGF0czp7ZHVyYXRpb246KyhlKmwpLnRvRml4ZWQoMiksc3BlZWNoUmF0ZTorVi50b0ZpeGVkKDIpLHBob25lQ291bnQ6ei5sZW5ndGgsc2lsZW50UmF0aW86KyhudC5yZWR1Y2UoKHQsaSk9PnQraS5kdXIsMCkvTWF0aC5tYXgoLjAwMSxlKmwpKS50b0ZpeGVkKDMpfX19ZnVuY3Rpb24gQ2Uobil7cmV0dXJuIG4+PTkwP3tsYWJlbDoiXHU2M0E1XHU4RkQxXHU2QkNEXHU4QkVEIixjZWZyOiJDMSsiLGJhbmQ6Ilx1NTE2RFx1N0VBN1x1NTNFM1x1OEJFRCBBKyJ9Om4+PTgyP3tsYWJlbDoiXHU0RjE4XHU3OUMwIixjZWZyOiJCMisiLGJhbmQ6Ilx1NTE2RFx1N0VBN1x1NTNFM1x1OEJFRCBBIn06bj49NzQ/e2xhYmVsOiJcdTgyNkZcdTU5N0QiLGNlZnI6IkIyIixiYW5kOiJcdTUxNkRcdTdFQTdcdTUzRTNcdThCRUQgQisifTpuPj02Nj97bGFiZWw6Ilx1NTQwOFx1NjgzQyIsY2VmcjoiQjErIixiYW5kOiJcdTUxNkRcdTdFQTdcdTUzRTNcdThCRUQgQiJ9Om4+PTU4P3tsYWJlbDoiXHU1M0NBXHU2ODNDXHU4RkI5XHU3RjE4IixjZWZyOiJCMSIsYmFuZDoiXHU1MTZEXHU3RUE3XHU1M0UzXHU4QkVEIEMrIn06e2xhYmVsOiJcdTk3MDBcdTg5ODFcdTUyQTBcdTVGM0EiLGNlZnI6IkEyLUIxIixiYW5kOiJcdTUxNkRcdTdFQTdcdTUzRTNcdThCRUQgQyJ9fWZ1bmN0aW9uIFp0KG4sZSl7bGV0IG89bi50b0xvd2VyQ2FzZSgpLHM9bmV3IEFycmF5KGUubGVuZ3RoKS5maWxsKCExKSxyPTA7Zm9yKGxldCBhPTA7YTxlLmxlbmd0aDthKyspe2xldCBoPVN0cmluZyhlW2FdKS50b0xvd2VyQ2FzZSgpLGM9by5pbmRleE9mKGgscik7aWYoYzwwKWNvbnRpbnVlO3I9YytoLmxlbmd0aDtsZXQgdT1vLnNsaWNlKHIpLm1hdGNoKC9eXHMqKFsuLDs6IT/igJTigJNdK3xcc3syLH0pLyk7dSYmKC9bLiw7OiE/4oCU4oCTXS8udGVzdCh1WzFdKXx8L1xzezIsfS8udGVzdCh1WzFdKSkmJihzW2FdPSEwKX1yZXR1cm4gc312YXIgJGU9WyJodHRwczovL2Nkbi5qc2RlbGl2ci5uZXQvbnBtL29ubnhydW50aW1lLXdlYkAxLjIyLjAvZGlzdC8iLCJodHRwczovL3VucGtnLmNvbS9vbm54cnVudGltZS13ZWJAMS4yMi4wL2Rpc3QvIl0sQmU9WyJodHRwczovL2Nkbi5qc2RlbGl2ci5uZXQvbnBtL2NoYXJzaXUtanNAMC4yLjAvYXNzZXRzLyIsImh0dHBzOi8vdW5wa2cuY29tL2NoYXJzaXUtanNAMC4yLjAvYXNzZXRzLyJdLFVlPVsiaHR0cHM6Ly9oZi1taXJyb3IuY29tL21uYW9penl5eS9jaGFyc2l1LWpzLW1vZGVscy9yZXNvbHZlL21haW4vZW5fdzJ2Ml9mY18xMG1zL21vZGVsX3F1YW50aXplZC5vbm54IiwiaHR0cHM6Ly9odWdnaW5nZmFjZS5jby9tbmFvaXp5eXkvY2hhcnNpdS1qcy1tb2RlbHMvcmVzb2x2ZS9tYWluL2VuX3cydjJfZmNfMTBtcy9tb2RlbF9xdWFudGl6ZWQub25ueCJdLHF0PSJzcGVha3dlbGwtbW9kZWwtdjEiLFF0PSJlbl93MnYyX2ZjXzEwbXMvbW9kZWxfcXVhbnRpemVkLm9ubngiLGh0PW51bGwsSz1udWxsLHV0PW51bGwsZHQ9bnVsbCx0dD0obixlKT0+c2VsZi5wb3N0TWVzc2FnZShuLGV8fFtdKSxMPShuLGUsbyxzKT0+dHQoe3R5cGU6InByb2dyZXNzIixzdGFnZTpuLGxvYWRlZDplLHRvdGFsOm8sbXNnOnN9KTthc3luYyBmdW5jdGlvbiBWZSgpe2lmKEspcmV0dXJuIEs7bGV0IG47Zm9yKGxldCBlIG9mICRlKXRyeXtMKCJydW50aW1lIiwwLDAsIlx1NkI2M1x1NTcyOFx1NTJBMFx1OEY3RFx1NjcyQ1x1NTczMFx1NjNBOFx1NzQwNlx1OEZEMFx1ODg0Q1x1NjVGNlx1MjAyNiIpO2xldCBvPWF3YWl0IGltcG9ydChlKyJvcnQud2FzbS5taW4ubWpzIik7cmV0dXJuIG8uZW52Lndhc20ud2FzbVBhdGhzPWUsby5lbnYud2FzbS5udW1UaHJlYWRzPTEsby5lbnYubG9nTGV2ZWw9ImVycm9yIixLPW8sS31jYXRjaChvKXtuPW99dGhyb3cgbmV3IEVycm9yKCJcdTYzQThcdTc0MDZcdThGRDBcdTg4NENcdTY1RjZcdTUyQTBcdThGN0RcdTU5MzFcdThEMjVcdUZGMUEiKyhuJiZuLm1lc3NhZ2UpKX1hc3luYyBmdW5jdGlvbiBYdCgpe2lmKGh0KXJldHVybiBodDtsZXQgbjtmb3IobGV0IGUgb2YgQmUpdHJ5e0woImFzc2V0cyIsMCwwLCJcdTZCNjNcdTU3MjhcdTUyQTBcdThGN0RcdTUzRDFcdTk3RjNcdThCQ0RcdTUxNzhcdUZGMDhcdTdFQTYgN01CXHVGRjA5XHUyMDI2Iik7bGV0IG89bD0+ZmV0Y2goZStsKS50aGVuKGQ9PntpZighZC5vayl0aHJvdyBuZXcgRXJyb3IoIkhUVFAgIitkLnN0YXR1cyk7cmV0dXJuIGQuanNvbigpfSksW3MscixhLGgsYyx1XT1hd2FpdCBQcm9taXNlLmFsbChbbygiY211ZGljdC5qc29uIiksbygiaG9tb2dyYXBocy5qc29uIiksbygiZzJwX3ZvY2FiLmpzb24iKSxvKCJnMnBfZ3J1Lmpzb24iKSxmZXRjaChlKyJnMnBfZ3J1LmJpbiIpLnRoZW4obD0+e2lmKCFsLm9rKXRocm93IG5ldyBFcnJvcigiSFRUUCAiK2wuc3RhdHVzKTtyZXR1cm4gbC5hcnJheUJ1ZmZlcigpfSksbygidm9jYWJfZW4uanNvbiIpXSk7cmV0dXJuIGh0PW5ldyBRKG5ldyBxKHtjbXVkaWN0OnMsaG9tb2dyYXBoczpyLHZvY2FiOmEsZ3J1OnttYW5pZmVzdDpoLGRhdGE6bmV3IEZsb2F0MzJBcnJheShjKX19KSx1KSxodH1jYXRjaChvKXtuPW99dGhyb3cgbmV3IEVycm9yKCJcdTUzRDFcdTk3RjNcdThCQ0RcdTUxNzhcdTUyQTBcdThGN0RcdTU5MzFcdThEMjVcdUZGMUEiKyhuJiZuLm1lc3NhZ2UpKX1hc3luYyBmdW5jdGlvbiBHZSgpe3RyeXtpZih0eXBlb2YgY2FjaGVzPiJ1IilyZXR1cm4gbnVsbDtsZXQgZT1hd2FpdChhd2FpdCBjYWNoZXMub3BlbihxdCkpLm1hdGNoKFF0KTtyZXR1cm4gZT9uZXcgVWludDhBcnJheShhd2FpdCBlLmFycmF5QnVmZmVyKCkpOm51bGx9Y2F0Y2h7cmV0dXJuIG51bGx9fWFzeW5jIGZ1bmN0aW9uIFllKG4pe3RyeXtpZih0eXBlb2YgY2FjaGVzPiJ1IilyZXR1cm47YXdhaXQoYXdhaXQgY2FjaGVzLm9wZW4ocXQpKS5wdXQoUXQsbmV3IFJlc3BvbnNlKG4se2hlYWRlcnM6eyJDb250ZW50LVR5cGUiOiJhcHBsaWNhdGlvbi9vY3RldC1zdHJlYW0iLCJDb250ZW50LUxlbmd0aCI6U3RyaW5nKG4ubGVuZ3RoKX19KSl9Y2F0Y2h7fX1hc3luYyBmdW5jdGlvbiBLZShuKXtsZXQgZTtmb3IobGV0IG8gb2YgVWUpdHJ5e0woIm1vZGVsIiwwLDAsIlx1NkI2M1x1NTcyOFx1NEUwQlx1OEY3RFx1OEJFRFx1OTdGM1x1NkEyMVx1NTc4Qlx1MjAyNiIpO2xldCBzPWF3YWl0IGZldGNoKG8pO2lmKCFzLm9rKXRocm93IG5ldyBFcnJvcigiSFRUUCAiK3Muc3RhdHVzKTtsZXQgcj1OdW1iZXIocy5oZWFkZXJzLmdldCgiY29udGVudC1sZW5ndGgiKXx8MCk7aWYoIXMuYm9keSl7bGV0IGc9bmV3IFVpbnQ4QXJyYXkoYXdhaXQgcy5hcnJheUJ1ZmZlcigpKTtyZXR1cm4gTCgibW9kZWwiLGcubGVuZ3RoLGcubGVuZ3RoLCJcdTZBMjFcdTU3OEJcdTVERjJcdTVDMzFcdTdFRUEiKSxnfWxldCBhPXMuYm9keS5nZXRSZWFkZXIoKSxoPVtdLGM9MCx1PTA7Zm9yKDs7KXtsZXR7ZG9uZTpnLHZhbHVlOnB9PWF3YWl0IGEucmVhZCgpO2lmKGcpYnJlYWs7aC5wdXNoKHApLGMrPXAubGVuZ3RoLGMtdT5NYXRoLm1heCgyZTYsci8xMDApJiYodT1jLEwoIm1vZGVsIixjLHIsIlx1NkI2M1x1NTcyOFx1NEUwQlx1OEY3RFx1OEJFRFx1OTdGM1x1NkEyMVx1NTc4Qlx1MjAyNiIpKX1sZXQgbD1uZXcgVWludDhBcnJheShjKSxkPTA7Zm9yKGxldCBnIG9mIGgpbC5zZXQoZyxkKSxkKz1nLmxlbmd0aDtyZXR1cm4gTCgibW9kZWwiLGMscnx8YywiXHU2QTIxXHU1NzhCXHU0RTBCXHU4RjdEXHU1QjhDXHU2MjEwIiksbH1jYXRjaChzKXtlPXN9dGhyb3cgbmV3IEVycm9yKCJcdThCRURcdTk3RjNcdTZBMjFcdTU3OEJcdTRFMEJcdThGN0RcdTU5MzFcdThEMjVcdUZGMUEiKyhlJiZlLm1lc3NhZ2UpKyJcdTMwMDJcdThGRDlcdTkwMUFcdTVFMzhcdTY2MkZcdTdGNTFcdTdFRENcdTY1RTBcdTZDRDVcdThCQkZcdTk1RUVcdTZBMjFcdTU3OEJcdTZFOTBcdUZGMDhoZi1taXJyb3IgLyBodWdnaW5nZmFjZVx1RkYwOVx1NUJGQ1x1ODFGNFx1NzY4NFx1RkYwQ1x1NjM2Mlx1NEUyQVx1N0Y1MVx1N0VEQ1x1NzNBRlx1NTg4M1x1NTE4RFx1OEJENVx1MzAwMiIpfWFzeW5jIGZ1bmN0aW9uIHRlKCl7aWYodXQpcmV0dXJuIHV0O2F3YWl0IFZlKCk7bGV0IG49YXdhaXQgR2UoKTtyZXR1cm4gbj9MKCJtb2RlbCIsbi5sZW5ndGgsbi5sZW5ndGgsIlx1NURGMlx1OEJGQlx1NTNENlx1NjcyQ1x1NTczMFx1N0YxM1x1NUI1OFx1NzY4NFx1OEJFRFx1OTdGM1x1NkEyMVx1NTc4QiIpOihuPWF3YWl0IEtlKCksYXdhaXQgWWUobikpLEwoImJ1aWxkIiwwLDAsIlx1NkI2M1x1NTcyOFx1NTIxRFx1NTlDQlx1NTMxNlx1NkEyMVx1NTc4Qlx1RkYwOFx1OTk5Nlx1NkIyMVx1N0VBNlx1OTcwMFx1NTFFMFx1NzlEMlx1RkYwOVx1MjAyNiIpLHV0PWF3YWl0IEsuSW5mZXJlbmNlU2Vzc2lvbi5jcmVhdGUobix7ZXhlY3V0aW9uUHJvdmlkZXJzOlsid2FzbSJdLGdyYXBoT3B0aW1pemF0aW9uTGV2ZWw6ImFsbCJ9KSx1dH1mdW5jdGlvbiBKdCgpe3JldHVybiBkdHx8KGR0PShhc3luYygpPT57YXdhaXQgWHQoKSxhd2FpdCB0ZSgpLHR0KHt0eXBlOiJyZWFkeSJ9KX0pKCkuY2F0Y2gobj0+e3Rocm93IGR0PW51bGwsdHQoe3R5cGU6ImZhdGFsIixtZXNzYWdlOm4ubWVzc2FnZXx8U3RyaW5nKG4pfSksbn0pKSxkdH1mdW5jdGlvbiBaZShuLGUpe2xldCBvPU1hdGgucm91bmQoLjAyKmUpLHM9TWF0aC5yb3VuZCguMTUqZSkscj0wO2ZvcihsZXQgZD0wO2Q8bi5sZW5ndGg7ZCsrKXtsZXQgZz1NYXRoLmFicyhuW2RdKTtnPnImJihyPWcpfWxldCBhPU1hdGgubWF4KC4wMTIsciouMDYpLGg9LTEsYz0tMTtmb3IobGV0IGQ9MDtkK288PW4ubGVuZ3RoO2QrPW8pe2xldCBnPTA7Zm9yKGxldCBwPWQ7cDxkK287cCsrKWcrPW5bcF0qbltwXTtNYXRoLnNxcnQoZy9vKT5hJiYoaDwwJiYoaD1kKSxjPWQrbyl9aWYoaDwwKXJldHVybiBuO2xldCB1PU1hdGgubWF4KDAsaC1zKSxsPU1hdGgubWluKG4ubGVuZ3RoLGMrcyk7cmV0dXJuIG4uc3ViYXJyYXkodSxsKX1hc3luYyBmdW5jdGlvbiBKZShuLGUpe2xldCBvPWF3YWl0IFh0KCkscz1hd2FpdCB0ZSgpO0woInJ1biIsMCwwLCJcdTZCNjNcdTU3MjhcdTUyMDZcdTY3OTBcdTRGNjBcdTc2ODRcdTUzRDFcdTk3RjNcdTIwMjYiKTtsZXQgcj1aZShuLDE2ZTMpLGE9YXQociksaD1EYXRlLm5vdygpLGM9bmV3IEsuVGVuc29yKCJmbG9hdDMyIixhLFsxLGEubGVuZ3RoXSksdT1hd2FpdCBzLnJ1bih7aW5wdXRfdmFsdWVzOmN9KSxsPU9iamVjdC5rZXlzKHUpWzBdLGQ9dVtsXSxnPWQuZGltcyxwPWQuZGF0YSxiLGY7aWYoZy5sZW5ndGg9PT0zKWI9Z1sxXSxmPWdbMl07ZWxzZSBpZihnLmxlbmd0aD09PTIpYj1nWzBdLGY9Z1sxXTtlbHNlIHRocm93IG5ldyBFcnJvcigiXHU2QTIxXHU1NzhCXHU4RjkzXHU1MUZBXHU3RUY0XHU1RUE2XHU1RjAyXHU1RTM4XHVGRjFBIitKU09OLnN0cmluZ2lmeShnKSk7bGV0IHk9a3QocCxiLGYpLHtncm91cHM6SCx3b3JkczpTfT1vLmdldFBob25lc0FuZFdvcmRzKGUpLF89by5nZXRQaG9uZUlkcyhIKTtyZXR1cm57cmVzdWx0Okt0KHksYixmLF8se2dyb3VwczpILHdvcmRzOlMsaWQycGhvbmU6by5pZDJwaG9uZSxzaWxJZHg6by5zaWxJZHgscmVzb2x1dGlvbjouMDEscHVuY3RBZnRlcjpadChlLFMpfSksbXM6RGF0ZS5ub3coKS1oLHNlY29uZHM6YS5sZW5ndGgvMTZlM319c2VsZi5vbm1lc3NhZ2U9YXN5bmMgbj0+e2xldCBlPW4uZGF0YXx8e307aWYoZS50eXBlPT09ImluaXQiKXt0cnl7YXdhaXQgSnQoKX1jYXRjaHt9cmV0dXJufWlmKGUudHlwZT09PSJzY29yZSIpdHJ5e2F3YWl0IEp0KCk7bGV0e3Jlc3VsdDpvLG1zOnMsc2Vjb25kczpyfT1hd2FpdCBKZShlLmF1ZGlvLGUudGV4dCk7dHQoe3R5cGU6InJlc3VsdCIsaWQ6ZS5pZCxyZXN1bHQ6byxtczpzLHNlY29uZHM6cn0pfWNhdGNoKG8pe3R0KHt0eXBlOiJlcnJvciIsaWQ6ZS5pZCxtZXNzYWdlOm8ubWVzc2FnZXx8U3RyaW5nKG8pfSl9fTsK</script>
+<script>
+/* ============================================================
+   题库：六级口语常见话题
+   ============================================================ */
+const BANK = [
+  {
+    topic: "自我介绍",
+    items: [
+      { en:"Nice to meet you. I'm a sophomore at a university in Beijing.",
+        zh:"很高兴认识你。我是北京一所大学的大二学生。",
+        groups:[["Nice","to","meet","you"],["I'm","a","sophomore"],["at","a","university","in","Beijing"]],
+        links:[["Nice","to"],["meet","you"],["I'm","a"],["at","a"],["university","in"],["in","Beijing"]],
+        weak:["to","a","a","in"],
+        tip:"<b>meet you</b> 里 /t/ + /j/ 会变成 /tʃ/，听起来像“米秋”。<b>at a</b> 连读弱读成 /ətə/。" },
+      { en:"I spend most of my free time reading and playing basketball.",
+        zh:"我大部分空闲时间都在看书和打篮球。",
+        groups:[["I","spend","most","of","my","free","time"],["reading","and","playing","basketball"]],
+        links:[["most","of"],["reading","and"],["and","playing"]],
+        weak:["of","my","and"],
+        tip:"<b>most of</b> 连读成 /moʊstəv/；<b>reading and</b> 里 and 弱读成 /ən/，像“瑞顶呢n”。" },
+      { en:"I'd say I'm an outgoing person, but I also enjoy some quiet time alone.",
+        zh:"我觉得我是个外向的人，但我也享受独处的安静时光。",
+        groups:[["I'd say"],["I'm an outgoing person"],["but I also enjoy"],["some quiet time alone"]],
+        links:[["I'm","an"],["an","outgoing"]],
+        weak:["an","but","some"],
+        tip:"<b>an outgoing</b> 连读成 /ənəʊtɡəʊɪŋ/。<b>but / some</b> 都要弱读，别重读。" },
+      { en:"In high school, I was really into English songs and movies.",
+        zh:"高中时我特别迷英文歌和电影。",
+        groups:[["In high school"],["I was really into"],["English songs and movies"]],
+        links:[["was","really"],["into","English"],["songs","and"],["and","movies"]],
+        weak:["was","and"],
+        tip:"<b>was</b> 弱读 /wəz/；<b>into English</b> 连读 /ɪntʊˈɪŋɡlɪʃ/。" },
+      { en:"My biggest dream is to study abroad after graduation.",
+        zh:"我最大的梦想是毕业后出国留学。",
+        groups:[["My biggest dream"],["is to study abroad"],["after graduation"]],
+        links:[["is","to"],["study","abroad"]],
+        weak:["to"],
+        tip:"<b>study abroad</b> 元音接元音，中间会带出一个 /j/ 滑音：/ˈstʌdi jəˈbrɔːd/。" }
+    ]
+  },
+  {
+    topic: "校园学习",
+    items: [
+      { en:"I usually get up at around seven and go to the library.",
+        zh:"我一般七点左右起床，然后去图书馆。",
+        groups:[["I usually get up"],["at around seven"],["and go to the library"]],
+        links:[["get","up"],["up","at"],["at","around"]],
+        weak:["at","and","to","the"],
+        tip:"<b>get up at around</b> 一口气连起来：/ɡe tʌ pə təˈraʊnd/。这是最典型的「一连串连读」。" },
+      { en:"Our English teacher always encourages us to speak up in class.",
+        zh:"我们的英语老师总是鼓励我们在课上大胆开口。",
+        groups:[["Our English teacher"],["always encourages us"],["to speak up in class"]],
+        links:[["encourages","us"],["speak","up"],["up","in"]],
+        weak:["to","us","in"],
+        tip:"<b>speak up in</b> 三词连读 /spiː kʌ pɪn/。注意别每个词都断开念。" },
+      { en:"I have to hand in my paper before the end of this month.",
+        zh:"我得在这个月底前交论文。",
+        groups:[["I have to hand in my paper"],["before the end of this month"]],
+        links:[["hand","in"],["in","my"],["end","of"],["of","this"]],
+        weak:["have","to","the","of"],
+        tip:"<b>hand in</b> 是连读短语 /hæn dɪn/；<b>have to</b> 口语里读 /hæftə/。" },
+      { en:"Taking notes in class helps me remember what I have learned.",
+        zh:"课上记笔记能帮我记住学过的东西。",
+        groups:[["Taking notes in class"],["helps me remember"],["what I have learned"]],
+        links:[["notes","in"],["in","class"],["what","I"],["I","have"]],
+        weak:["in","me","what"],
+        tip:"<b>what I have</b> 弱读+连读，读成 /wɒ taɪ həv/，不要字字清楚。" },
+      { en:"I am thinking about joining a study group this semester.",
+        zh:"这学期我在考虑加入一个学习小组。",
+        groups:[["I am thinking about"],["joining a study group"],["this semester"]],
+        links:[["thinking","about"],["about","joining"],["joining","a"]],
+        weak:["am","about","a"],
+        tip:"<b>thinking about</b> 连读 /ˈθɪŋkɪ ŋəˈbaʊt/，about 弱读，别读成重音的「额抱特」。" }
+    ]
+  },
+  {
+    topic: "科技互联网",
+    items: [
+      { en:"I cannot imagine my life without a smartphone.",
+        zh:"我无法想象没有智能手机的生活。",
+        groups:[["I cannot imagine"],["my life without a smartphone"]],
+        links:[["cannot","imagine"],["without","a"]],
+        weak:["my","a"],
+        tip:"<b>cannot imagine</b> 连读 /ˈkænɒ tɪˈmædʒɪn/，中间不要停。" },
+      { en:"A lot of people spend too much time on social media.",
+        zh:"很多人花太多时间在社交媒体上。",
+        groups:[["A lot of people"],["spend too much time"],["on social media"]],
+        links:[["lot","of"],["on","social"]],
+        weak:["of","on"],
+        tip:"<b>a lot of</b> 说快了就是 /əˈlɒtəv/，三个词几乎合成一个词。" },
+      { en:"Online learning gives us access to all kinds of resources.",
+        zh:"在线学习让我们能接触到各种资源。",
+        groups:[["Online learning gives us access"],["to all kinds of resources"]],
+        links:[["gives","us"],["us","access"],["kinds","of"]],
+        weak:["us","to","of"],
+        tip:"<b>gives us access</b> 三词连读 /ɡɪ vzʌ ˈsækses/；<b>to all</b> 元音连读带 /j/ 滑音。" },
+      { en:"I use an app to keep track of my daily schedule.",
+        zh:"我用一个 App 来记录每天的日程。",
+        groups:[["I use an app"],["to keep track of"],["my daily schedule"]],
+        links:[["use","an"],["an","app"],["track","of"]],
+        weak:["an","to","of","my"],
+        tip:"<b>an app</b> 连读成 /əˈnæp/，听起来是一个词；<b>track of</b> /træ kəv/。" },
+      { en:"It is important to take a break from the screen.",
+        zh:"从屏幕前抽身休息一下很重要。",
+        groups:[["It is important"],["to take a break"],["from the screen"]],
+        links:[["It","is"],["is","important"],["take","a"],["from","the"]],
+        weak:["is","to","a","from","the"],
+        tip:"<b>It is important</b> 一口气连读 /ɪ tɪ zɪmˈpɔːtnt/。这句弱读词多，节奏感很关键。" }
+    ]
+  },
+  {
+    topic: "环境与生活",
+    items: [
+      { en:"We should all do our part to protect the environment.",
+        zh:"我们都应该尽自己的一份力保护环境。",
+        groups:[["We should all do our part"],["to protect the environment"]],
+        links:[["do","our"],["protect","the"]],
+        weak:["should","our","to","the"],
+        tip:"<b>do our</b> 元音连读带 /w/ 滑音 /duː wɑː/。<b>environment</b> 重音在第二音节：en-VI-ron-ment。" },
+      { en:"Plastic bags are a big problem for the ocean.",
+        zh:"塑料袋对海洋来说是个大问题。",
+        groups:[["Plastic bags are a big problem"],["for the ocean"]],
+        links:[["bags","are"],["are","a"],["for","the"],["the","ocean"]],
+        weak:["are","a","for","the"],
+        tip:"<b>bags are a</b> 连读 /bæɡ zə rə/；<b>the ocean</b> 的 the 因为后接元音读 /ði/。" },
+      { en:"Riding a bike instead of driving is good for the air.",
+        zh:"骑车代替开车对空气有好处。",
+        groups:[["Riding a bike"],["instead of driving"],["is good for the air"]],
+        links:[["Riding","a"],["instead","of"],["for","the"],["the","air"]],
+        weak:["a","of","for","the"],
+        tip:"<b>instead of</b> 读 /ɪnˈstedəv/，of 弱读成 /əv/ 甚至 /ə/。" },
+      { en:"A lot of animals are losing their homes because of us.",
+        zh:"很多动物的家园正因为我们而消失。",
+        groups:[["A lot of animals are losing"],["their homes"],["because of us"]],
+        links:[["lot","of"],["of","animals"],["animals","are"],["because","of"],["of","us"]],
+        weak:["of","are","of","us"],
+        tip:"这句前半段几乎全是连读 + 弱读。慢速读顺了再提速，别一个词一个词蹦。" },
+      { en:"Small changes in our daily life can make a big difference.",
+        zh:"日常生活里的小改变也能带来大不同。",
+        groups:[["Small changes in our daily life"],["can make a big difference"]],
+        links:[["changes","in"],["in","our"],["make","a"]],
+        weak:["in","our","can","a"],
+        tip:"<b>can</b> 在句中弱读成 /kən/，读成「看」就错了，那会让整句节奏崩掉。" }
+    ]
+  },
+  {
+    topic: "文化交流",
+    items: [
+      { en:"Learning a language is also about learning a culture.",
+        zh:"学一门语言也是在学习一种文化。",
+        groups:[["Learning a language"],["is also about"],["learning a culture"]],
+        links:[["Learning","a"],["is","also"],["about","learning"]],
+        weak:["a","is","about","a"],
+        tip:"<b>is also</b> 连读 /ɪ ˈzɔːlsəʊ/；<b>about</b> 弱读 /əˈbaʊt/，重音在后。" },
+      { en:"I would love to travel around the world and meet new people.",
+        zh:"我很想环游世界，认识新朋友。",
+        groups:[["I would love to travel around"],["the world"],["and meet new people"]],
+        links:[["travel","around"],["and","meet"]],
+        weak:["would","to","the","and"],
+        tip:"<b>would</b> 弱读成 /wəd/，几乎听不见；<b>and</b> 弱读 /ən/。" },
+      { en:"Food is one of the best ways to understand a country.",
+        zh:"食物是了解一个国家最好的方式之一。",
+        groups:[["Food is one of the best ways"],["to understand a country"]],
+        links:[["is","one"],["one","of"],["understand","a"]],
+        weak:["is","of","the","to","a"],
+        tip:"<b>one of the</b> 三词连读弱读 /wʌ nə ðə/。这是六级口语高频结构。" },
+      { en:"It is interesting how people greet each other in different places.",
+        zh:"不同地方的人打招呼的方式很有意思。",
+        groups:[["It is interesting"],["how people greet each other"],["in different places"]],
+        links:[["It","is"],["is","interesting"],["greet","each"],["each","other"]],
+        weak:["is","in"],
+        tip:"<b>greet each other</b> → /ɡriː tiː ˈtʃʌðə/，注意 each other 里 /tʃ/ 音。" },
+      { en:"Speaking English well opens a lot of doors for you.",
+        zh:"英语说得好会为你打开很多扇门。",
+        groups:[["Speaking English well"],["opens a lot of doors"],["for you"]],
+        links:[["opens","a"],["lot","of"],["for","you"]],
+        weak:["a","of","for","you"],
+        tip:"<b>for you</b> 弱读连读成 /fə jə/，两个词几乎合成一个音节。" }
+    ]
+  },
+  {
+    topic: "社会热点",
+    items: [
+      { en:"More and more young people choose to work from home.",
+        zh:"越来越多的年轻人选择居家办公。",
+        groups:[["More and more young people"],["choose to work from home"]],
+        links:[["and","more"],["more","young"],["choose","to"]],
+        weak:["and","to","from"],
+        tip:"<b>more and more</b> 里两个 and 都弱读成 /ən/，读成 /mɔːr ən mɔːr/。" },
+      { en:"I think everyone should have the chance to get a good education.",
+        zh:"我认为每个人都应该有机会接受良好的教育。",
+        groups:[["I think everyone should have the chance"],["to get a good education"],
+        ],
+        links:[["should","have"],["have","the"],["to","get"],["get","a"]],
+        weak:["should","have","the","to","a"],
+        tip:"<b>should have</b> 弱读 /ʃə dəv/；<b>get a good</b> 连读 /ɡe tə ɡʊd/。" },
+      { en:"We need to talk more openly about mental health.",
+        zh:"我们需要更公开地谈论心理健康。",
+        groups:[["We need to talk"],["more openly about"],["mental health"]],
+        links:[["need","to"],["talk","more"],["openly","about"]],
+        weak:["to","about"],
+        tip:"<b>need to</b> 口语常读 /niːdtə/；<b>mental</b> 重音在第一音节：MEN-tal。" },
+      { en:"Volunteering taught me a lot about responsibility.",
+        zh:"志愿服务教会了我很多关于责任的事。",
+        groups:[["Volunteering taught me"],["a lot about responsibility"]],
+        links:[["taught","me"],["me","a"],["lot","about"]],
+        weak:["me","a","about"],
+        tip:"<b>taught me a</b> 连读 /tɔː mi jə/；<b>responsibility</b> 重音在第四音节：re-spon-si-BI-li-ty。" },
+      { en:"The city is getting bigger, but the traffic is getting worse.",
+        zh:"城市越来越大，但交通越来越糟。",
+        groups:[["The city is getting bigger"],["but the traffic"],["is getting worse"]],
+        links:[["city","is"],["is","getting"],["but","the"]],
+        weak:["the","is","but","the","is"],
+        tip:"<b>city is getting</b> 三词连读 /ˈsɪt i zɡe tɪŋ/。整句几乎只有两个重音词，其余全弱读。" }
+    ]
+  }
+];
+
+/* ============================================================
+   工具
+   ============================================================ */
+const $ = s => document.querySelector(s);
+const $$ = s => [...document.querySelectorAll(s)];
+const escapeHtml = s => String(s == null ? "" : s).replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+
+/* ============================================================
+   状态
+   ============================================================ */
+let tIdx = 0, sIdx = 0, cur = null;
+let worker = null, engineReady = false;
+let recording = false, busy = false;
+let mediaRecorder = null, audioChunks = [], audioURL = null, micStream = null;
+let recTimer = null, lastResult = null;
+let pendingText = null;
+const HISTORY_KEY = "speakwell.phoneme.v1";
+
+/* ============================================================
+   Worker（内嵌，单文件分发）
+   ============================================================ */
+function bootWorker(){
+  try{
+    const b64 = document.getElementById("workerB64").textContent.trim();
+    const bin = atob(b64);
+    const bytes = new Uint8Array(bin.length);
+    for(let i=0;i<bin.length;i++) bytes[i] = bin.charCodeAt(i);
+    const url = URL.createObjectURL(new Blob([bytes], {type:"text/javascript"}));
+    worker = new Worker(url, {type:"module"});
+  }catch(e){
+    setPrep("bad", "评测引擎启动失败：" + e.message);
+    return;
+  }
+  worker.onmessage = onWorkerMsg;
+  worker.onerror = (e) => setPrep("bad", "评测引擎出错：" + (e.message || "未知错误"));
+  worker.postMessage({type:"init"});
+}
+
+function onWorkerMsg(e){
+  const m = e.data || {};
+  if(m.type === "progress"){
+    const bar = $("#prepbar");
+    if(m.stage === "model"){
+      bar.style.display = "block";
+      if(m.total > 0){
+        bar.querySelector("i").style.width = Math.round(m.loaded / m.total * 100) + "%";
+        setPrep("load", "正在下载语音模型 " + (m.loaded/1048576).toFixed(1) + " / " + (m.total/1048576).toFixed(1) + " MB（只需一次，之后走本地缓存）");
+      }else{
+        bar.querySelector("i").style.width = "35%";
+        setPrep("load", m.msg || "正在下载语音模型…");
+      }
+    }else if(m.stage === "assets" || m.stage === "runtime" || m.stage === "build"){
+      bar.style.display = bar.style.display === "none" ? "none" : "block";
+      bar.querySelector("i").style.width = "18%";
+      setPrep("load", m.msg || "正在准备…");
+    }else if(m.stage === "run"){
+      setPrep("ok", m.msg || "正在分析…");
+    }
+    return;
+  }
+  if(m.type === "ready"){
+    engineReady = true;
+    $("#prepbar").style.display = "none";
+    setPrep("ok", "评测引擎已就绪 · 全部在你的设备上本地运行，录音不会上传");
+    maybeSelfTest();
+    return;
+  }
+  if(m.type === "fatal"){
+    engineReady = false;
+    setPrep("bad", m.message || "引擎加载失败");
+    return;
+  }
+  if(m.type === "result"){
+    busy = false;
+    setRecIdle();
+    renderResult(m.result, m);
+    saveHistory(m.result);
+    return;
+  }
+  if(m.type === "error"){
+    busy = false;
+    setRecIdle();
+    $("#live").textContent = "";
+    toast("打分失败：" + m.message);
+    return;
+  }
+}
+
+function setPrep(kind, text){
+  const pill = $("#preppill");
+  const cls = kind === "ok" ? "pill ok" : kind === "bad" ? "pill bad" : "pill load";
+  pill.className = cls;
+  pill.innerHTML = kind === "ok" ? "就绪" : kind === "bad" ? "出错" : '<span class="spin"></span> 准备中';
+  $("#preptxt").innerHTML = text;
+  if(kind === "ok" && engineReady) $("#prepcard").style.display = "none";
+}
+
+/* ============================================================
+   音素名的中文可读化
+   ============================================================ */
+const PH_ZH = {IY:"衣ː",IH:"衣",EY:"诶ɪ",EH:"诶",AE:"æ啊",AA:"啊ː",AO:"ɔː",OW:"欧ʊ",UH:"乌",UW:"乌ː",AH:"ə",ER:"ɜːr",AY:"哀ɪ",AW:"啊ʊ",OY:"ɔɪ",P:"p",B:"b",T:"t",D:"d",K:"k",G:"g",F:"f",V:"v",TH:"θ",DH:"ð",S:"s",Z:"z",SH:"ʃ",ZH:"ʒ",HH:"h",CH:"tʃ",JH:"dʒ",M:"m",N:"n",NG:"ŋ",L:"l",R:"r",W:"w",Y:"j",SIL:"静音"};
+const phName = p => p + (PH_ZH[p] ? "(" + PH_ZH[p] + ")" : "");
+
+/* ============================================================
+   渲染题目
+   ============================================================ */
+const topicBar = $("#topics");
+BANK.forEach((t,i)=>{
+  const el = document.createElement("div");
+  el.className = "chip" + (i===0?" on":"");
+  el.textContent = t.topic;
+  el.onclick = ()=> setTopic(i);
+  topicBar.appendChild(el);
+});
+function setTopic(i){
+  tIdx = i; sIdx = 0;
+  $$("#topics .chip").forEach((c,k)=>c.classList.toggle("on", k===i));
+  loadSentence();
+}
+function loadSentence(){
+  const t = BANK[tIdx];
+  cur = t.items[sIdx];
+  $("#topicname").textContent = t.topic;
+  $("#progress").textContent = `第 ${sIdx+1} / ${t.items.length} 句`;
+  $("#tip").innerHTML = cur.tip || "";
+  $("#zh").textContent = cur.zh;
+  renderSentence(false);
+  $("#result").style.display = "none";
+  $("#btnReplay").style.display = "none";
+  $("#btnToggleSent").style.display = "none";
+  $("#live").textContent = "";
+  lastResult = null;
+  resetAudio();
+}
+function renderSentence(hide){
+  const flat=[], gid=[];
+  cur.groups.forEach((g,gi)=>g.forEach(w=>{flat.push(w);gid.push(gi);}));
+  const linkWords=new Set(), linkStart=new Set();
+  (cur.links||[]).forEach(([a,b])=>{
+    for(let i=0;i<flat.length-1;i++){
+      if(flat[i].toLowerCase()===a.toLowerCase() && flat[i+1].toLowerCase()===b.toLowerCase() && gid[i]===gid[i+1]){
+        linkStart.add(i); linkWords.add(i); linkWords.add(i+1); break;
+      }
+    }
+  });
+  const weakSet=new Set();
+  (cur.weak||[]).forEach(w=>{
+    flat.forEach((x,i)=>{ if(x.toLowerCase().replace(/[^a-z']/g,"")===w.toLowerCase()) weakSet.add(i); });
+  });
+  let html="";
+  flat.forEach((w,i)=>{
+    let cls="";
+    if(weakSet.has(i)) cls+=" weak";
+    if(linkWords.has(i)) cls+=" lk";
+    html += `<span class="${cls.trim()}">${hide?"●".repeat(w.length):escapeHtml(w)}</span>`;
+    if(i<flat.length-1){
+      if(gid[i]!==gid[i+1]) html += `<span class="gsep">/</span>`;
+      else if(linkStart.has(i)) html += `<span class="lkj"></span>`;
+      else html += " ";
+    }
+  });
+  $("#sent").innerHTML = html;
+}
+
+/* ============================================================
+   标准示范
+   ============================================================ */
+let speaking=false;
+function updatePlayBtn(){ $("#btnPlay").textContent = speaking ? "⏸ 停止播放" : "▶ 听标准示范"; }
+$("#rate").oninput = e => { $("#rateval").textContent = (+e.target.value).toFixed(2).replace(/0$/,"")+"x"; };
+$("#btnPlay").onclick = ()=>{
+  if(!("speechSynthesis" in window)){ toast("当前浏览器不支持语音合成，请用 Chrome / Edge"); return; }
+  if(speaking){ speechSynthesis.cancel(); speaking=false; updatePlayBtn(); return; }
+  const rate = +$("#rate").value;
+  const chunks = cur.groups.map(g=>g.join(" "));
+  const gap = Math.round(200 + (1.1-rate)*450);
+  speaking = true; updatePlayBtn();
+  let i=0;
+  const speakNext = ()=>{
+    if(i>=chunks.length){ speaking=false; updatePlayBtn(); return; }
+    const u = new SpeechSynthesisUtterance(chunks[i]);
+    u.lang="en-US"; u.rate=rate; u.pitch=1;
+    const v = pickVoice(); if(v) u.voice=v;
+    u.onend = ()=>{ i++; setTimeout(speakNext, gap); };
+    u.onerror = ()=>{ i++; setTimeout(speakNext, gap); };
+    speechSynthesis.speak(u);
+  };
+  speakNext();
+};
+function pickVoice(){
+  const vs = speechSynthesis.getVoices();
+  return vs.find(v=>/en-US/i.test(v.lang) && /female|samantha|zira|aria|jenny/i.test(v.name))
+      || vs.find(v=>/en-US/i.test(v.lang))
+      || vs.find(v=>/^en/i.test(v.lang)) || null;
+}
+
+/* ============================================================
+   录音
+   ============================================================ */
+function pickMime(){
+  const cands = ["audio/webm;codecs=opus","audio/webm","audio/mp4","audio/ogg;codecs=opus"];
+  if(typeof MediaRecorder === "undefined") return "";
+  for(const c of cands) if(MediaRecorder.isTypeSupported && MediaRecorder.isTypeSupported(c)) return c;
+  return "";
+}
+
+$("#btnRec").onclick = ()=>{
+  if(recording) stopRecording(); else startRecording();
+};
+
+async function startRecording(){
+  if(recording || busy) return;
+  if(!engineReady){ toast("评测引擎还在准备中，等一下就绪（首次需要下载模型）"); return; }
+  if(speaking){ speechSynthesis.cancel(); speaking=false; updatePlayBtn(); }
+  if(!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia){
+    toast("这个浏览器拿不到麦克风。请用 https 打开，或换 Chrome / Safari"); return;
+  }
+  $("#result").style.display = "none";
+  $("#live").textContent = "";
+  $("#btnReplay").style.display = "none";
+  resetAudio();
+
+  $("#btnRec").textContent = "… 正在获取麦克风";
+  let stream;
+  try{
+    stream = await navigator.mediaDevices.getUserMedia({audio:{channelCount:1, echoCancellation:true, noiseSuppression:true}});
+  }catch(err){
+    setRecIdle();
+    const m = {NotAllowedError:"麦克风权限被拒绝", NotFoundError:"没有检测到麦克风",
+               NotReadableError:"麦克风被其他程序占用", SecurityError:"非安全环境（必须用 https 打开）"};
+    toast("麦克风不可用：" + (m[err.name] || err.name));
+    return;
+  }
+  micStream = stream;
+  if(typeof MediaRecorder === "undefined"){
+    stream.getTracks().forEach(t=>t.stop());
+    setRecIdle();
+    toast("这个浏览器不支持录音（MediaRecorder），请换 Chrome / Safari"); return;
+  }
+  const mime = pickMime();
+  try{
+    mediaRecorder = mime ? new MediaRecorder(stream,{mimeType:mime}) : new MediaRecorder(stream);
+  }catch(e){
+    stream.getTracks().forEach(t=>t.stop());
+    setRecIdle();
+    toast("录音启动失败：" + e.message); return;
+  }
+  audioChunks = [];
+  mediaRecorder.ondataavailable = e => { if(e.data && e.data.size) audioChunks.push(e.data); };
+  mediaRecorder.onstop = onRecStop;
+  mediaRecorder.start();
+
+  recording = true;
+  $("#btnRec").textContent = "■ 停止录音";
+  $("#btnRec").classList.add("live");
+  $("#live").innerHTML = '<span style="color:#ff7b72">● 正在录音…</span> 读完点「停止录音」';
+  clearTimeout(recTimer);
+  recTimer = setTimeout(()=>{ if(recording) stopRecording(); }, 20000);
+}
+
+function stopRecording(){
+  clearTimeout(recTimer);
+  recording = false;
+  if(mediaRecorder && mediaRecorder.state !== "inactive"){ try{ mediaRecorder.stop(); }catch(e){} }
+  else { setRecIdle(); }
+}
+function setRecIdle(){
+  $("#btnRec").textContent = "● 开始朗读";
+  $("#btnRec").classList.remove("live");
+}
+function setBusy(msg){
+  busy = true;
+  $("#btnRec").disabled = true;
+  $("#btnRec").textContent = "… 分析中";
+  $("#live").innerHTML = '<span class="spin"></span> ' + msg;
+}
+
+async function onRecStop(){
+  if(micStream){ micStream.getTracks().forEach(t=>t.stop()); micStream = null; }
+  const blob = new Blob(audioChunks, {type: audioChunks[0] && audioChunks[0].type || "audio/webm"});
+  audioChunks = [];
+  resetAudio();
+  if(blob.size < 1200){
+    setRecIdle();
+    $("#live").textContent = "没录到声音，再试一次。";
+    return;
+  }
+  audioURL = URL.createObjectURL(blob);
+  $("#btnReplay").style.display = "inline-flex";
+  $("#btnToggleSent").style.display = "inline-flex";
+
+  setBusy("正在把录音转成 16kHz 单声道…");
+  let pcm;
+  try{
+    pcm = await decodeToMono16k(await blob.arrayBuffer());
+  }catch(e){
+    busy = false; $("#btnRec").disabled = false; setRecIdle();
+    $("#live").textContent = "";
+    toast("录音解码失败：" + e.message);
+    return;
+  }
+  if(pcm.length < 3200){ // <0.2s
+    busy = false; $("#btnRec").disabled = false; setRecIdle();
+    $("#live").textContent = "录音太短了，读完一句再停。";
+    return;
+  }
+  setBusy("正在做音素级对齐与打分…（手机上几秒钟）");
+  const text = cur.en;
+  try{
+    worker.postMessage({type:"score", id:++scoreSeq, text, audio:pcm}, [pcm.buffer]);
+  }catch(e){
+    busy = false; $("#btnRec").disabled = false; setRecIdle();
+    toast("提交失败：" + e.message);
+  }
+}
+let scoreSeq = 0;
+
+async function decodeToMono16k(arrayBuffer){
+  const AC = window.AudioContext || window.webkitAudioContext;
+  const Off = window.OfflineAudioContext || window.webkitOfflineAudioContext;
+  const tmp = new AC();
+  let decoded;
+  try{
+    decoded = await tmp.decodeAudioData(arrayBuffer.slice(0));
+  }finally{
+    try{ tmp.close(); }catch(e){}
+  }
+  const sr = 16000;
+  const frames = Math.ceil(decoded.duration * sr);
+  const off = new Off(1, frames, sr);
+  const src = off.createBufferSource();
+  src.buffer = decoded;
+  src.connect(off.destination);
+  src.start();
+  const rendered = await off.startRendering();
+  return rendered.getChannelData(0);
+}
+
+function resetAudio(){ if(audioURL){ URL.revokeObjectURL(audioURL); audioURL = null; } }
+$("#btnReplay").onclick = ()=>{
+  if(!audioURL) return;
+  const a = $("#player");
+  a.src = audioURL;
+  a.play();
+  $("#btnReplay").textContent = "▶ 播放中…";
+  a.onended = ()=>{ $("#btnReplay").textContent = "↻ 回放我的录音"; };
+};
+
+/* ============================================================
+   结果渲染
+   ============================================================ */
+function scoreColor(s){ if(s>=85) return "var(--ok)"; if(s>=70) return "var(--acc)"; if(s>=55) return "var(--warn)"; return "var(--bad)"; }
+function wordCls(s){ if(s>=85) return "ok"; if(s>=70) return "close"; return "bad"; }
+function bar(label, v, color){
+  if(v === null || v === undefined) return "";
+  return `<div class="bar"><div class="bt"><span>${label}</span><b style="color:${scoreColor(v)}">${v}</b></div>
+    <div class="track"><div class="fill" style="background:${color||scoreColor(v)}" data-w="${v}"></div></div></div>`;
+}
+
+const ISSUE_LABEL = {phoneme:"音素", pause:"停顿", link:"连读", weak:"弱读"};
+
+function renderResult(r, m){
+  lastResult = r;
+  const col = scoreColor(r.overall);
+  const C = 2*Math.PI*44;
+  const d = r.dims;
+
+  /* --- 逐词 + 音素 --- */
+  let wordsHtml = "";
+  for(const w of r.words){
+    const inner = w.phones.map(p=>{
+      if(p.score >= 70) return escapeHtml(p.p);
+      return `<u title="${escapeHtml(p.produced)}">${escapeHtml(p.p)}</u>`;
+    }).join(" ");
+    wordsHtml += `<span class="w ${wordCls(w.score)}">${escapeHtml(w.word)}<span class="ph">${inner}</span></span>`;
+  }
+
+  /* --- 内容校验警告 --- */
+  let warn = "";
+  if(r.audioMismatch){
+    warn = `<div class="warnband"><b>⚠ 你读的内容和屏幕上的句子对不上（匹配度 ${Math.round(r.content.rate*100)}%）。</b><br>
+      分数已按内容匹配度封顶，不是发音问题。确认一下是不是读错句了，或者中间漏了一整段。</div>`;
+  }else if(r.content.rate < 0.9){
+    warn = `<div class="warnband" style="background:rgba(210,153,34,.09);border-color:rgba(210,153,34,.35);color:#d9c58c">
+      <b>内容匹配度 ${Math.round(r.content.rate*100)}%</b>：有 ${r.content.missing} 个音漏读、${r.content.wrong} 个音读错、${r.content.extra} 个多读。下面逐词部分标出来了。</div>`;
+  }
+
+  /* --- 问题清单 --- */
+  let iss = "";
+  for(const i of (r.issues||[])){
+    const ph = i.expected ? `<b>${escapeHtml(i.word)}</b> 里的 <b>${phName(i.expected)}</b> 你读成了 <b>${escapeHtml(i.produced)}</b>：` : `<b>${escapeHtml(i.word)}</b>：`;
+    const cls = i.kind==="link"?"lk":i.kind==="weak"?"wk":i.kind==="pause"?"pz":"ph";
+    iss += `<div class="is ${cls}"><span class="k">${ISSUE_LABEL[i.kind]||"提示"}</span>${ph}${escapeHtml(i.tip)}</div>`;
+  }
+  if(!iss) iss = `<div class="is" style="border-left-color:var(--ok)">这一句没有需要改的地方。可以提速到 1.0x 再读一遍试试。</div>`;
+
+  /* --- 变体 --- */
+  let varHtml = "";
+  if((r.variantsAccepted||[]).length){
+    const uniq = [...new Set(r.variantsAccepted.map(v=>`${v.expected}→${v.produced}`))].slice(0,12);
+    varHtml = `<div style="font-size:12px;color:var(--dim);margin-top:12px">这些音读的是可接受的变体，已按「接近」计分，没有扣你分：
+      <div class="kv">${uniq.map(v=>`<span>${escapeHtml(v)}</span>`).join("")}</div></div>`;
+  }
+
+  /* --- 连读 / 弱读明细 --- */
+  let linkHtml = "";
+  if((r.linkPairs||[]).length){
+    linkHtml = `<details><summary>连读明细（${r.linkPairs.filter(x=>x.linked).length}/${r.linkPairs.length} 处连上了）</summary>
+      <div class="mono">${r.linkPairs.map(l=>`${escapeHtml(l.from)} ${l.linked?"‿":"✕"} ${escapeHtml(l.to)}  [${l.kind}] 间隙 ${(l.gap*1000).toFixed(0)}ms  ${l.linked?"✓":"✗"}`).join("<br>")}</div></details>`;
+  }
+  let weakHtml = "";
+  if((r.weakWords||[]).length){
+    weakHtml = `<details><summary>弱读明细（检出功能词 ${r.weakWords.length} 个）</summary>
+      <div class="mono">${r.weakWords.map(w=>`${escapeHtml(w.word)}: 重读元音 ${escapeHtml(w.vowel)} → 实际 ${escapeHtml(w.produced)}  ${w.reduced?"✓ 已弱读":"— 强读"}`).join("<br>")}</div></details>`;
+  }
+
+  /* --- 内容校验明细 --- */
+  const contentHtml = `<details><summary>内容校验明细（模型实际听到的音素 vs 参考音素）</summary>
+    <div class="mono">
+      参考：${escapeHtml(r.content.ref.join(" "))}<br><br>
+      实听：${escapeHtml(r.content.decoded.join(" "))}<br><br>
+      对上 ${r.content.matched} · 漏读 ${r.content.missing} · 多读 ${r.content.extra} · 读错 ${r.content.wrong}
+    </div></details>`;
+
+  const stat = `<div class="stat">
+      <div><div class="n">${r.stats.phoneCount}</div><div class="k">音素</div></div>
+      <div><div class="n">${r.stats.duration.toFixed(1)}s</div><div class="k">时长</div></div>
+      <div><div class="n">${r.stats.speechRate.toFixed(1)}</div><div class="k">音素/秒</div></div>
+      <div><div class="n">${m && m.ms ? (m.ms/1000).toFixed(1)+"s" : "—"}</div><div class="k">本地耗时</div></div>
+    </div>`;
+
+  $("#result").style.display = "block";
+  $("#result").innerHTML = `
+    <div class="card-title">本次结果</div>
+    ${warn}
+    <div class="scorewrap">
+      <div class="ring">
+        <svg width="104" height="104">
+          <circle cx="52" cy="52" r="44" fill="none" stroke="var(--line)" stroke-width="8"/>
+          <circle cx="52" cy="52" r="44" fill="none" stroke="${col}" stroke-width="8" stroke-linecap="round"
+            stroke-dasharray="${C}" stroke-dashoffset="${C*(1-r.overall/100)}" style="transition:stroke-dashoffset .8s ease"/>
+        </svg>
+        <div class="val"><div class="num" style="color:${col}">${r.overall}</div><div class="lbl">综合分</div></div>
+      </div>
+      <div class="bars">
+        <div style="font-size:13.5px;color:${col};font-weight:700">${escapeHtml(r.level.label)} · ${escapeHtml(r.level.cefr)}</div>
+        <div style="font-size:12px;color:var(--dim);margin:2px 0 10px">对标 ${escapeHtml(r.level.band)}</div>
+        ${bar("准确度 · 每个音读准了没", d.accuracy, "var(--acc)")}
+        ${bar("完整度 · 有没有漏音吞音", d.completeness, "var(--acc2)")}
+      </div>
+    </div>
+    <div style="display:flex;gap:10px">
+      <div style="flex:1">${bar("流利度 · 节奏", d.fluency)}</div>
+      <div style="flex:1">${bar("连读", d.linking, "var(--link)")}</div>
+    </div>
+    <div style="display:flex;gap:10px">
+      <div style="flex:1">${bar("弱读", d.weak, "var(--weak)")}</div>
+      <div style="flex:1">${bar("意群 / 停顿", d.thought)}</div>
+    </div>
+
+    <div class="card-title" style="margin-top:16px">逐词 · 逐音素</div>
+    <div class="words">${wordsHtml}</div>
+    <div style="font-size:11.5px;color:var(--dim2);margin-top:9px">每个词下面一排是它的音素；<span style="color:var(--bad)">红色的音</span>是模型没听准的，把鼠标/手指按住可以看到它实际听成了什么。</div>
+    ${varHtml}
+
+    <div class="card-title" style="margin-top:16px">最该改的几处</div>
+    <div class="iss">${iss}</div>
+
+    ${stat}
+    ${linkHtml}${weakHtml}${contentHtml}
+  `;
+  setTimeout(()=>{ $$("#result .fill").forEach(f=>f.style.width = f.dataset.w + "%"); }, 30);
+  $("#live").textContent = "";
+}
+
+/* ============================================================
+   自检：?selftest=<音频URL> 时，用一段现成音频跑完整流程
+   （用于验证本地引擎是否正常工作，普通使用不会触发）
+   ============================================================ */
+const SELFTEST = new URLSearchParams(location.search).get("selftest");
+const SELFTEST_TEXT = new URLSearchParams(location.search).get("selftesttext");
+let selfTested = false;
+async function maybeSelfTest(){
+  if(!SELFTEST || selfTested) return;
+  selfTested = true;
+  try{
+    setBusy("自检：正在载入测试音频…");
+    const buf = await (await fetch(SELFTEST)).arrayBuffer();
+    const pcm = await decodeToMono16k(buf);
+    setBusy("自检：正在做音素级对齐与打分…");
+    worker.postMessage({type:"score", id:++scoreSeq, text:SELFTEST_TEXT || cur.en, audio:pcm}, [pcm.buffer]);
+  }catch(e){
+    busy = false; $("#btnRec").disabled = false; setRecIdle();
+    toast("自检失败：" + e.message);
+  }
+}
+
+/* ============================================================
+   记录
+   ============================================================ */
+function getHistory(){ try{ return JSON.parse(localStorage.getItem(HISTORY_KEY) || "[]"); }catch(e){ return []; } }
+function saveHistory(r){
+  const h = getHistory();
+  h.unshift({ts:Date.now(), score:r.overall, acc:r.dims.accuracy, fl:r.dims.fluency,
+             lk:r.dims.linking, wk:r.dims.weak, th:r.dims.thought,
+             text:cur.en, topic:BANK[tIdx].topic});
+  localStorage.setItem(HISTORY_KEY, JSON.stringify(h.slice(0,200)));
+  renderHistory();
+}
+function renderHistory(){
+  const h = getHistory();
+  if(!h.length){
+    $("#hstat").innerHTML = `<div class="empty" style="flex:1;padding:14px 0">还没有记录，去练一句吧</div>`;
+    $("#hist").innerHTML = `<div class="empty">暂无练习记录</div>`;
+    return;
+  }
+  const avg = a => Math.round(h.reduce((s,x)=>s+(x[a]||0),0)/h.length);
+  const best = Math.max(...h.map(x=>x.score));
+  $("#hstat").innerHTML = `
+    <div><div class="n" style="color:${scoreColor(avg("score"))}">${avg("score")}</div><div class="k">平均综合</div></div>
+    <div><div class="n" style="color:var(--ok)">${best}</div><div class="k">最高分</div></div>
+    <div><div class="n">${h.length}</div><div class="k">练习次数</div></div>
+    <div><div class="n">${avg("acc")}</div><div class="k">平均准确度</div></div>`;
+  $("#hist").innerHTML = h.slice(0,40).map(x=>{
+    const d = new Date(x.ts);
+    const p = n => String(n).padStart(2,"0");
+    const bits = [`准确${x.acc}`];
+    if(x.lk!=null) bits.push(`连读${x.lk}`);
+    if(x.wk!=null) bits.push(`弱读${x.wk}`);
+    return `<div class="hi">
+      <div class="s" style="color:${scoreColor(x.score)}">${x.score}</div>
+      <div class="m">
+        <div class="t">${escapeHtml(x.text)}</div>
+        <div class="d">${escapeHtml(x.topic)} · ${bits.join(" · ")} · ${p(d.getMonth()+1)}/${p(d.getDate())} ${p(d.getHours())}:${p(d.getMinutes())}</div>
+      </div>
+    </div>`;
+  }).join("");
+}
+$("#btnClear").onclick = ()=>{
+  if(confirm("确定清空全部练习记录？")){ localStorage.removeItem(HISTORY_KEY); renderHistory(); toast("已清空"); }
+};
+
+/* ============================================================
+   导航 / Tab / Toast
+   ============================================================ */
+$("#btnNext").onclick = ()=>{
+  if(sIdx < BANK[tIdx].items.length-1) sIdx++;
+  else { tIdx = (tIdx+1)%BANK.length; sIdx = 0; $$("#topics .chip").forEach((c,k)=>c.classList.toggle("on", k===tIdx)); }
+  loadSentence();
+};
+$("#btnPrev").onclick = ()=>{
+  if(sIdx > 0) sIdx--;
+  else { tIdx = (tIdx-1+BANK.length)%BANK.length; sIdx = BANK[tIdx].items.length-1; $$("#topics .chip").forEach((c,k)=>c.classList.toggle("on", k===tIdx)); }
+  loadSentence();
+};
+let hidden = false;
+$("#btnToggleSent").onclick = ()=>{
+  hidden = !hidden;
+  renderSentence(hidden);
+  $("#btnToggleSent").textContent = hidden ? "👁 显示原文" : "👁 看原文重读";
+};
+$$(".tab").forEach(t=>{
+  t.onclick = ()=>{
+    $$(".tab").forEach(x=>x.classList.remove("on"));
+    t.classList.add("on");
+    $$(".view").forEach(v=>v.classList.remove("on"));
+    $("#v-"+t.dataset.v).classList.add("on");
+    if(t.dataset.v === "history") renderHistory();
+    window.scrollTo({top:0,behavior:"smooth"});
+  };
+});
+let toastTimer = null;
+function toast(msg){
+  const el = $("#toast");
+  el.textContent = msg; el.classList.add("on");
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(()=>el.classList.remove("on"), 3200);
+}
+
+/* ============================================================
+   初始化
+   ============================================================ */
+loadSentence();
+renderHistory();
+bootWorker();
+if(!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia){
+  setTimeout(()=>toast("这个环境拿不到麦克风。请用 https 打开页面，或用手机浏览器直接访问。"), 900);
+}
+</script>
+</body>
+</html>
