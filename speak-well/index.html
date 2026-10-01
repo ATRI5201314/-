@@ -55,6 +55,8 @@
 
   .sent{font-size:20px;line-height:2.05;letter-spacing:.2px;word-break:break-word}
   .sent .lk{color:var(--link);font-weight:600}
+  /* 连读连接符：CSS 绘制的小横杆，避免依赖罕见字符的字形 */
+  .sent .lkj{display:inline-block;width:13px;height:2px;margin:0 1px;border-radius:2px;background:var(--link);vertical-align:middle}
   /* 弱读声明在后：同一个词既是弱读又在连读里时，弱读的橙色优先 */
   .sent .weak{color:var(--weak);border-bottom:1.5px dashed rgba(255,180,84,.55);padding-bottom:1px}
   .sent .gsep{color:var(--dim2);font-weight:300;padding:0 5px;user-select:none;font-size:16px}
@@ -631,13 +633,16 @@ function loadSentence(){
 function renderSentence(hide){
   const flat=[], gid=[];
   cur.groups.forEach((g,gi)=>g.forEach(w=>{flat.push(w);gid.push(gi);}));
-  // 连读对：左右两个词都标上（弱读优先由 CSS 顺序保证）
-  const linkSet=new Set();
+  // linkWords：需要着色的词（连读对左右两个词）
+  // linkStart：需要插入连接符的位置（只有连读对的左词，即 i 与 i+1 之间）
+  const linkWords=new Set(), linkStart=new Set();
   (cur.links||[]).forEach(([a,b])=>{
     for(let i=0;i<flat.length-1;i++){
       if(flat[i].toLowerCase()===a.toLowerCase() &&
          flat[i+1].toLowerCase()===b.toLowerCase() &&
-         gid[i]===gid[i+1]){ linkSet.add(i); linkSet.add(i+1); break; }
+         gid[i]===gid[i+1]){
+        linkStart.add(i); linkWords.add(i); linkWords.add(i+1); break;
+      }
     }
   });
   const weakSet=new Set();
@@ -649,11 +654,12 @@ function renderSentence(hide){
   flat.forEach((w,i)=>{
     let cls="";
     if(weakSet.has(i)) cls+=" weak";
-    if(linkSet.has(i)) cls+=" lk";
+    if(linkWords.has(i)) cls+=" lk";
     html += `<span class="${cls.trim()}">${hide?"●".repeat(w.length):w}</span>`;
     if(i<flat.length-1){
       if(gid[i]!==gid[i+1]) html += `<span class="gsep">/</span>`;
-      else if(linkSet.has(i)) html += `<span class="lk">‿</span>`;
+      // 用 CSS 画连接符，不用 ‿ (U+203F)：该字符在部分安卓字体里会显示成方框
+      else if(linkStart.has(i)) html += `<span class="lkj"></span>`;
       else html += " ";
     }
   });
