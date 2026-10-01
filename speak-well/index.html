@@ -1,0 +1,1054 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>说得好 · 英语口语陪练</title>
+<style>
+  :root{
+    --bg:#0d1117;
+    --bg2:#161b22;
+    --card:#1a212b;
+    --line:#2a3441;
+    --txt:#e6edf3;
+    --dim:#8b98a8;
+    --dim2:#5f6b7a;
+    --acc:#4f9cf9;
+    --acc2:#7c5cff;
+    --ok:#3fb950;
+    --warn:#d29922;
+    --bad:#f85149;
+    --weak:#ffb454;
+    --link:#4fd1c5;
+  }
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+  html,body{margin:0;padding:0}
+  body{
+    background:radial-gradient(1200px 600px at 20% -10%,#1b2740 0%,transparent 60%),
+               radial-gradient(900px 500px at 100% 0%,#2a1b3d 0%,transparent 55%),
+               var(--bg);
+    color:var(--txt);
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;
+    min-height:100vh;
+    line-height:1.6;
+  }
+  .wrap{max-width:720px;margin:0 auto;padding:0 16px 120px}
+  header{padding:26px 0 14px;text-align:center}
+  h1{font-size:22px;margin:0 0 6px;letter-spacing:.5px}
+  h1 span{background:linear-gradient(90deg,var(--acc),var(--acc2));-webkit-background-clip:text;background-clip:text;color:transparent}
+  .sub{color:var(--dim);font-size:13px;margin:0}
+
+  .tabs{display:flex;gap:6px;background:var(--bg2);border:1px solid var(--line);border-radius:12px;padding:4px;margin:16px 0 18px;position:sticky;top:8px;z-index:20;backdrop-filter:blur(8px)}
+  .tab{flex:1;text-align:center;padding:9px 4px;border-radius:9px;font-size:13.5px;color:var(--dim);cursor:pointer;user-select:none;transition:.18s}
+  .tab.on{background:linear-gradient(135deg,var(--acc),var(--acc2));color:#fff;font-weight:600}
+  .view{display:none}
+  .view.on{display:block;animation:fade .25s ease}
+  @keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+
+  .topics{display:flex;gap:8px;overflow-x:auto;padding-bottom:10px;margin-bottom:4px;scrollbar-width:none}
+  .topics::-webkit-scrollbar{display:none}
+  .chip{flex:0 0 auto;padding:7px 14px;border-radius:999px;background:var(--bg2);border:1px solid var(--line);font-size:13px;color:var(--dim);cursor:pointer;white-space:nowrap;transition:.18s}
+  .chip.on{background:rgba(79,156,249,.16);border-color:var(--acc);color:var(--acc);font-weight:600}
+
+  .card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:18px;margin-bottom:14px}
+  .card-title{font-size:12px;color:var(--dim2);letter-spacing:1px;text-transform:uppercase;margin:0 0 10px}
+
+  .sent{font-size:20px;line-height:2.05;letter-spacing:.2px;word-break:break-word}
+  .sent .lk{color:var(--link);font-weight:600}
+  /* 弱读声明在后：同一个词既是弱读又在连读里时，弱读的橙色优先 */
+  .sent .weak{color:var(--weak);border-bottom:1.5px dashed rgba(255,180,84,.55);padding-bottom:1px}
+  .sent .gsep{color:var(--dim2);font-weight:300;padding:0 5px;user-select:none;font-size:16px}
+  .zh{color:var(--dim);font-size:13.5px;margin-top:12px;padding-top:12px;border-top:1px dashed var(--line)}
+
+  .legend{display:flex;flex-wrap:wrap;gap:14px;font-size:12.5px;color:var(--dim);margin-top:14px}
+  .legend i{font-style:normal;display:inline-flex;align-items:center;gap:5px}
+  .dot{width:9px;height:9px;border-radius:3px;display:inline-block}
+
+  .tip{background:rgba(79,156,249,.08);border-left:3px solid var(--acc);border-radius:0 10px 10px 0;padding:11px 14px;font-size:13px;color:#b9c8d8;margin-top:14px}
+  .tip b{color:var(--acc)}
+
+  .row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+  .btn{flex:1;min-width:120px;padding:13px;border-radius:12px;border:1px solid var(--line);background:var(--bg2);color:var(--txt);font-size:15px;font-weight:600;cursor:pointer;transition:.18s;display:flex;align-items:center;justify-content:center;gap:7px}
+  .btn:hover{border-color:var(--dim2)}
+  .btn:active{transform:scale(.985)}
+  .btn.primary{background:linear-gradient(135deg,var(--acc),var(--acc2));border:none;color:#fff}
+  .btn.rec{background:linear-gradient(135deg,#f85149,#d29922);border:none;color:#fff}
+  .btn.rec.live{animation:pulse 1.3s infinite}
+  @keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(248,81,73,.5)}50%{box-shadow:0 0 0 12px rgba(248,81,73,0)}}
+  .btn:disabled{opacity:.4;cursor:not-allowed}
+  .btn.sm{flex:0 0 auto;min-width:auto;padding:9px 15px;font-size:13.5px}
+
+  .rate{display:flex;align-items:center;gap:10px;font-size:13px;color:var(--dim);margin-top:12px}
+  input[type=range]{-webkit-appearance:none;appearance:none;flex:1;height:4px;border-radius:2px;background:var(--line);outline:none}
+  input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:16px;height:16px;border-radius:50%;background:var(--acc);cursor:pointer}
+  input[type=range]::-moz-range-thumb{width:16px;height:16px;border-radius:50%;background:var(--acc);border:none;cursor:pointer}
+
+  #live{font-size:15px;color:var(--dim2);min-height:26px;margin-top:14px;font-style:italic}
+
+  .scorewrap{display:flex;gap:18px;align-items:center;margin-bottom:16px}
+  .ring{position:relative;width:104px;height:104px;flex:0 0 auto}
+  .ring svg{transform:rotate(-90deg)}
+  .ring .val{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center}
+  .ring .num{font-size:29px;font-weight:700;line-height:1}
+  .ring .lbl{font-size:10px;color:var(--dim);letter-spacing:1px;margin-top:3px}
+  .bars{flex:1;min-width:0}
+  .bar{margin-bottom:11px}
+  .bar .bt{display:flex;justify-content:space-between;font-size:12.5px;color:var(--dim);margin-bottom:5px}
+  .bar .bt b{color:var(--txt);font-variant-numeric:tabular-nums}
+  .track{height:7px;border-radius:4px;background:var(--bg2);overflow:hidden}
+  .fill{height:100%;border-radius:4px;width:0;transition:width .6s cubic-bezier(.2,.8,.3,1)}
+
+  .words{display:flex;flex-wrap:wrap;gap:7px;margin-top:4px}
+  .w{padding:5px 10px;border-radius:8px;font-size:14px;border:1px solid transparent;position:relative}
+  .w.ok{background:rgba(63,185,80,.13);color:#7ee787;border-color:rgba(63,185,80,.3)}
+  .w.close{background:rgba(210,153,34,.13);color:#e3b341;border-color:rgba(210,153,34,.3)}
+  .w.miss{background:rgba(248,81,73,.13);color:#ff7b72;border-color:rgba(248,81,73,.3);text-decoration:line-through;text-decoration-color:rgba(255,123,114,.6)}
+  .w .hint{display:block;font-size:10.5px;opacity:.75;font-style:italic;margin-top:1px}
+  .w.extra{background:rgba(139,152,168,.1);color:var(--dim);border-color:var(--line)}
+
+  .stat{display:flex;gap:10px;margin-top:14px}
+  .stat>div{flex:1;background:var(--bg2);border:1px solid var(--line);border-radius:10px;padding:10px;text-align:center}
+  .stat .n{font-size:17px;font-weight:700;font-variant-numeric:tabular-nums}
+  .stat .k{font-size:11px;color:var(--dim2);margin-top:2px}
+
+  .feedback{font-size:13.5px;color:#b9c8d8;margin-top:14px;padding:12px 14px;background:var(--bg2);border-radius:10px;border:1px solid var(--line)}
+  .feedback b{color:#fff}
+  .feedback .hl{color:var(--acc)}
+
+  .navrow{display:flex;gap:10px;margin-top:2px}
+
+  .hist{display:flex;flex-direction:column;gap:9px}
+  .hi{background:var(--bg2);border:1px solid var(--line);border-radius:11px;padding:11px 13px;display:flex;gap:12px;align-items:center}
+  .hi .s{font-size:19px;font-weight:700;width:44px;text-align:center;flex:0 0 auto;font-variant-numeric:tabular-nums}
+  .hi .m{flex:1;min-width:0}
+  .hi .t{font-size:13.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .hi .d{font-size:11.5px;color:var(--dim2);margin-top:2px}
+  .empty{text-align:center;color:var(--dim2);font-size:13.5px;padding:36px 0}
+
+  .doc{font-size:14px;color:#c3ceded}
+  .doc h3{font-size:15px;margin:22px 0 8px;color:var(--txt)}
+  .doc h3:first-child{margin-top:0}
+  .doc p{color:var(--dim);margin:0 0 10px;line-height:1.75}
+  .doc ul{color:var(--dim);padding-left:20px;margin:0 0 12px}
+  .doc li{margin-bottom:6px;line-height:1.7}
+  .doc strong{color:var(--txt)}
+  .warnbox{background:rgba(210,153,34,.09);border:1px solid rgba(210,153,34,.3);border-radius:12px;padding:13px 15px;font-size:13px;color:#d9c58c;margin:14px 0}
+  .warnbox b{color:#e3b341}
+
+  .toast{position:fixed;left:50%;bottom:30px;transform:translate(-50%,20px);background:#232c38;border:1px solid var(--line);color:var(--txt);padding:11px 20px;border-radius:11px;font-size:13.5px;opacity:0;pointer-events:none;transition:.25s;z-index:99;box-shadow:0 8px 28px rgba(0,0,0,.45)}
+  .toast.on{opacity:1;transform:translate(-50%,0)}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>说得好 · <span>英语口语陪练</span></h1>
+    <p class="sub">六级口语 · 连读 / 弱读 / 意群 专项训练</p>
+  </header>
+
+  <div class="tabs">
+    <div class="tab on" data-v="practice">练习</div>
+    <div class="tab" data-v="history">我的记录</div>
+    <div class="tab" data-v="about">打分原理</div>
+  </div>
+
+  <!-- ========== 练习 ========== -->
+  <div class="view on" id="v-practice">
+    <div class="topics" id="topics"></div>
+
+    <div class="card">
+      <div class="row" style="margin-bottom:14px">
+        <div style="font-size:12.5px;color:var(--dim2)" id="progress">第 1 / 5 句</div>
+        <div style="flex:1"></div>
+        <div style="font-size:12px;color:var(--dim2)" id="topicname"></div>
+      </div>
+
+      <div class="sent" id="sent"></div>
+      <div class="zh" id="zh"></div>
+
+      <div class="legend">
+        <i><span class="dot" style="background:var(--link)"></span>连读（连起来读成一个音）</i>
+        <i><span class="dot" style="background:var(--weak)"></span>弱读（读轻、读快、读成 /ə/）</i>
+        <i><span class="dot" style="background:var(--dim2)"></span> / 意群停顿</i>
+      </div>
+
+      <div class="tip" id="tip"></div>
+
+      <div class="rate">
+        <span>示范语速</span>
+        <input type="range" id="rate" min="0.6" max="1.15" step="0.05" value="0.9">
+        <span id="rateval" style="width:34px;text-align:right;color:var(--txt)">0.9x</span>
+      </div>
+
+      <div class="row" style="margin-top:14px">
+        <button class="btn" id="btnPlay">▶ 听标准示范</button>
+        <button class="btn rec" id="btnRec">● 开始朗读</button>
+      </div>
+      <div id="live"></div>
+      <audio id="player" style="display:none"></audio>
+      <div class="row" style="margin-top:10px">
+        <button class="btn sm" id="btnReplay" style="display:none">↻ 回放我的录音</button>
+        <button class="btn sm" id="btnToggleSent" style="display:none">👁 看原文重读</button>
+      </div>
+    </div>
+
+    <div class="card" id="result" style="display:none"></div>
+
+    <div class="navrow">
+      <button class="btn" id="btnPrev">← 上一句</button>
+      <button class="btn primary" id="btnNext">下一句 →</button>
+    </div>
+  </div>
+
+  <!-- ========== 记录 ========== -->
+  <div class="view" id="v-history">
+    <div class="card">
+      <div class="card-title">总体</div>
+      <div class="stat" id="hstat"></div>
+    </div>
+    <div class="card">
+      <div class="card-title">最近练习</div>
+      <div class="hist" id="hist"></div>
+    </div>
+    <button class="btn" id="btnClear" style="margin-top:2px">清空记录</button>
+  </div>
+
+  <!-- ========== 原理 ========== -->
+  <div class="view" id="v-about">
+    <div class="card doc">
+      <h3>为什么很多软件的朗读打分「不准」</h3>
+      <p>市面上绝大多数跟读打分，底层是<strong>语音识别（ASR）</strong>。它算的是「识别器有多确定自己听懂了」，<strong>不是</strong>「你的发音有多接近母语者」。</p>
+      <p>这就带来一个系统性偏差：当你把 <em>tell me a little bit about</em> 里的连读、弱读都做对时，声音会糊成一片，识别器反而更容易听错 → 给你低分。<strong>越地道、越低分，这不是你的问题，是它的机制问题。</strong></p>
+      <div class="warnbox">
+        <b>所以本工具不给你一个「玄学总分」。</b>它把分数拆成两个可解释的维度，并且把识别结果原样摊开给你看，你自己就能判断到底是「真没读好」还是「识别器听错了」。
+      </div>
+
+      <h3>打分怎么算的</h3>
+      <ul>
+        <li><strong>完整度</strong>：目标句子里，有多少词被识别到了。没识别到 = 可能漏读、吞音，或者被识别器听丢了。</li>
+        <li><strong>准确度</strong>：识别到的词里，有多少和原句对上了（含少量拼写/时态近似也算对）。</li>
+        <li><strong>综合分</strong> = 完整度 × 准确度。它不是加权平均，所以「漏读」和「读错」都会被如实反映。</li>
+      </ul>
+
+      <h3>三个「反不公」的设计</h3>
+      <ul>
+        <li><strong>取最优候选</strong>：识别器会给出多个候选结果，本工具对每一个都打分，<strong>取最高的那个</strong>。单结果软件直接丢掉的可能就是那个正确的。</li>
+        <li><strong>缩写等价</strong>：你说 <em>I am</em> 还是 <em>I'm</em>，说 <em>going to</em> 还是 <em>gonna</em>，都算对，不会因为写法不同扣分。</li>
+        <li><strong>逐词展示</strong>：每个词都标出「对 / 接近 / 没识别到」，鼠标停上去能看到识别器听成了什么。分低了，你一眼就知道是不是被冤枉了。</li>
+      </ul>
+
+      <h3>这个工具做不到什么（说实话）</h3>
+      <ul>
+        <li>它<strong>不能</strong>评价音标级别的发音质量（比如 /θ/ 咬舌、/æ/ 的口型），因为浏览器识别器只输出文本，不给音素分。</li>
+        <li>识别依赖网络和 Chrome/Edge 浏览器，环境差时会识别不准 —— 这属于工具误差，不是你的水平。</li>
+        <li>真正判断发音质量，<strong>最可靠的还是「录音回放 + 和标准示范对比」</strong>。所以每句话都配了标准示范和录音回放，建议两个一起用。</li>
+      </ul>
+
+      <h3>怎么用它练</h3>
+      <ul>
+        <li><strong>第 1 遍</strong>：先点「听标准示范」，注意青色（连读）和橙色（弱读）的地方，以及灰色的意群停顿。</li>
+        <li><strong>第 2 遍</strong>：跟读录音，看完整度和准确度哪一项低。</li>
+        <li><strong>第 3 遍</strong>：看逐词结果。绿色的词 = 稳了；红色/黄色 = 重点。意群位置该停就停，停对了识别器也更容易听清。</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+/* ============================================================
+   题库：六级口语常见话题
+   groups = 意群切分 | links = 连读词对 | weak = 弱读词
+   ============================================================ */
+const BANK = [
+  {
+    topic: "自我介绍",
+    items: [
+      { en:"Nice to meet you. I'm a sophomore at a university in Beijing.",
+        zh:"很高兴认识你。我是北京一所大学的大二学生。",
+        groups:[["Nice","to","meet","you"],["I'm","a","sophomore"],["at","a","university","in","Beijing"]],
+        links:[["Nice","to"],["meet","you"],["I'm","a"],["at","a"],["university","in"],["in","Beijing"]],
+        weak:["to","a","a","in"],
+        tip:"<b>meet you</b> 里 /t/ + /j/ 会变成 /tʃ/，听起来像“米秋”。<b>at a</b> 连读弱读成 /ətə/。" },
+      { en:"I spend most of my free time reading and playing basketball.",
+        zh:"我大部分空闲时间都在看书和打篮球。",
+        groups:[["I","spend","most","of","my","free","time"],["reading","and","playing","basketball"]],
+        links:[["most","of"],["reading","and"],["and","playing"]],
+        weak:["of","my","and"],
+        tip:"<b>most of</b> 连读成 /moʊstəv/；<b>reading and</b> 里 and 弱读成 /ən/，像“瑞顶呢n”。" },
+      { en:"I'd say I'm an outgoing person, but I also enjoy some quiet time alone.",
+        zh:"我觉得我是个外向的人，但我也享受独处的安静时光。",
+        groups:[["I'd say"],["I'm an outgoing person"],["but I also enjoy"],["some quiet time alone"]],
+        links:[["I'm","an"],["an","outgoing"]],
+        weak:["an","but","some"],
+        tip:"<b>an outgoing</b> 连读成 /ənəʊtɡəʊɪŋ/。<b>but / some</b> 都要弱读，别重读。" },
+      { en:"In high school, I was really into English songs and movies.",
+        zh:"高中时我特别迷英文歌和电影。",
+        groups:[["In high school"],["I was really into"],["English songs and movies"]],
+        links:[["was","really"],["into","English"],["songs","and"],["and","movies"]],
+        weak:["was","and"],
+        tip:"<b>was</b> 弱读 /wəz/；<b>into English</b> 连读 /ɪntʊˈɪŋɡlɪʃ/。" },
+      { en:"My biggest dream is to study abroad after graduation.",
+        zh:"我最大的梦想是毕业后出国留学。",
+        groups:[["My biggest dream"],["is to study abroad"],["after graduation"]],
+        links:[["is","to"],["study","abroad"]],
+        weak:["to"],
+        tip:"<b>study abroad</b> 元音接元音，中间会带出一个 /j/ 滑音：/ˈstʌdi jəˈbrɔːd/。" }
+    ]
+  },
+  {
+    topic: "校园学习",
+    items: [
+      { en:"I usually get up at around seven and go to the library.",
+        zh:"我一般七点左右起床，然后去图书馆。",
+        groups:[["I usually get up"],["at around seven"],["and go to the library"]],
+        links:[["get","up"],["up","at"],["at","around"]],
+        weak:["at","and","to","the"],
+        tip:"<b>get up at around</b> 一口气连起来：/ɡe tʌ pə təˈraʊnd/。这是最典型的「一连串连读」。" },
+      { en:"Our English teacher always encourages us to speak up in class.",
+        zh:"我们的英语老师总是鼓励我们在课上大胆开口。",
+        groups:[["Our English teacher"],["always encourages us"],["to speak up in class"]],
+        links:[["encourages","us"],["speak","up"],["up","in"]],
+        weak:["to","us","in"],
+        tip:"<b>speak up in</b> 三词连读 /spiː kʌ pɪn/。注意别每个词都断开念。" },
+      { en:"I have to hand in my paper before the end of this month.",
+        zh:"我得在这个月底前交论文。",
+        groups:[["I have to hand in my paper"],["before the end of this month"]],
+        links:[["hand","in"],["in","my"],["end","of"],["of","this"]],
+        weak:["have","to","the","of"],
+        tip:"<b>hand in</b> 是连读短语 /hæn dɪn/；<b>have to</b> 口语里读 /hæftə/。" },
+      { en:"Taking notes in class helps me remember what I have learned.",
+        zh:"课上记笔记能帮我记住学过的东西。",
+        groups:[["Taking notes in class"],["helps me remember"],["what I have learned"]],
+        links:[["notes","in"],["in","class"],["what","I"],["I","have"]],
+        weak:["in","me","what"],
+        tip:"<b>what I have</b> 弱读+连读，读成 /wɒ taɪ həv/，不要字字清楚。" },
+      { en:"I am thinking about joining a study group this semester.",
+        zh:"这学期我在考虑加入一个学习小组。",
+        groups:[["I am thinking about"],["joining a study group"],["this semester"]],
+        links:[["thinking","about"],["about","joining"],["joining","a"]],
+        weak:["am","about","a"],
+        tip:"<b>thinking about</b> 连读 /ˈθɪŋkɪ ŋəˈbaʊt/，about 弱读，别读成重音的「额抱特」。" }
+    ]
+  },
+  {
+    topic: "科技互联网",
+    items: [
+      { en:"I cannot imagine my life without a smartphone.",
+        zh:"我无法想象没有智能手机的生活。",
+        groups:[["I cannot imagine"],["my life without a smartphone"]],
+        links:[["cannot","imagine"],["without","a"]],
+        weak:["my","a"],
+        tip:"<b>cannot imagine</b> 连读 /ˈkænɒ tɪˈmædʒɪn/，中间不要停。" },
+      { en:"A lot of people spend too much time on social media.",
+        zh:"很多人花太多时间在社交媒体上。",
+        groups:[["A lot of people"],["spend too much time"],["on social media"]],
+        links:[["lot","of"],["on","social"]],
+        weak:["of","on"],
+        tip:"<b>a lot of</b> 说快了就是 /əˈlɒtəv/，三个词几乎合成一个词。" },
+      { en:"Online learning gives us access to all kinds of resources.",
+        zh:"在线学习让我们能接触到各种资源。",
+        groups:[["Online learning gives us access"],["to all kinds of resources"]],
+        links:[["gives","us"],["us","access"],["kinds","of"]],
+        weak:["us","to","of"],
+        tip:"<b>gives us access</b> 三词连读 /ɡɪ vzʌ ˈsækses/；<b>to all</b> 元音连读带 /j/ 滑音。" },
+      { en:"I use an app to keep track of my daily schedule.",
+        zh:"我用一个 App 来记录每天的日程。",
+        groups:[["I use an app"],["to keep track of"],["my daily schedule"]],
+        links:[["use","an"],["an","app"],["track","of"]],
+        weak:["an","to","of","my"],
+        tip:"<b>an app</b> 连读成 /əˈnæp/，听起来是一个词；<b>track of</b> /træ kəv/。" },
+      { en:"It is important to take a break from the screen.",
+        zh:"从屏幕前抽身休息一下很重要。",
+        groups:[["It is important"],["to take a break"],["from the screen"]],
+        links:[["It","is"],["is","important"],["take","a"],["from","the"]],
+        weak:["is","to","a","from","the"],
+        tip:"<b>It is important</b> 一口气连读 /ɪ tɪ zɪmˈpɔːtnt/。这句弱读词多，节奏感很关键。" }
+    ]
+  },
+  {
+    topic: "环境与生活",
+    items: [
+      { en:"We should all do our part to protect the environment.",
+        zh:"我们都应该尽自己的一份力保护环境。",
+        groups:[["We should all do our part"],["to protect the environment"]],
+        links:[["do","our"],["protect","the"]],
+        weak:["should","our","to","the"],
+        tip:"<b>do our</b> 元音连读带 /w/ 滑音 /duː wɑː/。<b>environment</b> 重音在第二音节：en-VI-ron-ment。" },
+      { en:"Plastic bags are a big problem for the ocean.",
+        zh:"塑料袋对海洋来说是个大问题。",
+        groups:[["Plastic bags are a big problem"],["for the ocean"]],
+        links:[["bags","are"],["are","a"],["for","the"],["the","ocean"]],
+        weak:["are","a","for","the"],
+        tip:"<b>bags are a</b> 连读 /bæɡ zə rə/；<b>the ocean</b> 的 the 因为后接元音读 /ði/。" },
+      { en:"Riding a bike instead of driving is good for the air.",
+        zh:"骑车代替开车对空气有好处。",
+        groups:[["Riding a bike"],["instead of driving"],["is good for the air"]],
+        links:[["Riding","a"],["instead","of"],["for","the"],["the","air"]],
+        weak:["a","of","for","the"],
+        tip:"<b>instead of</b> 读 /ɪnˈstedəv/，of 弱读成 /əv/ 甚至 /ə/。" },
+      { en:"A lot of animals are losing their homes because of us.",
+        zh:"很多动物的家园正因为我们而消失。",
+        groups:[["A lot of animals are losing"],["their homes"],["because of us"]],
+        links:[["lot","of"],["of","animals"],["animals","are"],["because","of"],["of","us"]],
+        weak:["of","are","of","us"],
+        tip:"这句前半段几乎全是连读 + 弱读。慢速读顺了再提速，别一个词一个词蹦。" },
+      { en:"Small changes in our daily life can make a big difference.",
+        zh:"日常生活里的小改变也能带来大不同。",
+        groups:[["Small changes in our daily life"],["can make a big difference"]],
+        links:[["changes","in"],["in","our"],["make","a"]],
+        weak:["in","our","can","a"],
+        tip:"<b>can</b> 在句中弱读成 /kən/，读成「看」就错了，那会让整句节奏崩掉。" }
+    ]
+  },
+  {
+    topic: "文化交流",
+    items: [
+      { en:"Learning a language is also about learning a culture.",
+        zh:"学一门语言也是在学习一种文化。",
+        groups:[["Learning a language"],["is also about"],["learning a culture"]],
+        links:[["Learning","a"],["is","also"],["about","learning"]],
+        weak:["a","is","about","a"],
+        tip:"<b>is also</b> 连读 /ɪ ˈzɔːlsəʊ/；<b>about</b> 弱读 /əˈbaʊt/，重音在后。" },
+      { en:"I would love to travel around the world and meet new people.",
+        zh:"我很想环游世界，认识新朋友。",
+        groups:[["I would love to travel around"],["the world"],["and meet new people"]],
+        links:[["travel","around"],["and","meet"]],
+        weak:["would","to","the","and"],
+        tip:"<b>would</b> 弱读成 /wəd/，几乎听不见；<b>and</b> 弱读 /ən/。" },
+      { en:"Food is one of the best ways to understand a country.",
+        zh:"食物是了解一个国家最好的方式之一。",
+        groups:[["Food is one of the best ways"],["to understand a country"]],
+        links:[["is","one"],["one","of"],["understand","a"]],
+        weak:["is","of","the","to","a"],
+        tip:"<b>one of the</b> 三词连读弱读 /wʌ nə ðə/。这是六级口语高频结构。" },
+      { en:"It is interesting how people greet each other in different places.",
+        zh:"不同地方的人打招呼的方式很有意思。",
+        groups:[["It is interesting"],["how people greet each other"],["in different places"]],
+        links:[["It","is"],["is","interesting"],["greet","each"],["each","other"]],
+        weak:["is","in"],
+        tip:"<b>greet each other</b> → /ɡriː tiː ˈtʃʌðə/，注意 each other 里 /tʃ/ 音。" },
+      { en:"Speaking English well opens a lot of doors for you.",
+        zh:"英语说得好会为你打开很多扇门。",
+        groups:[["Speaking English well"],["opens a lot of doors"],["for you"]],
+        links:[["opens","a"],["lot","of"],["for","you"]],
+        weak:["a","of","for","you"],
+        tip:"<b>for you</b> 弱读连读成 /fə jə/，两个词几乎合成一个音节。" }
+    ]
+  },
+  {
+    topic: "社会热点",
+    items: [
+      { en:"More and more young people choose to work from home.",
+        zh:"越来越多的年轻人选择居家办公。",
+        groups:[["More and more young people"],["choose to work from home"]],
+        links:[["and","more"],["more","young"],["choose","to"]],
+        weak:["and","to","from"],
+        tip:"<b>more and more</b> 里两个 and 都弱读成 /ən/，读成 /mɔːr ən mɔːr/。" },
+      { en:"I think everyone should have the chance to get a good education.",
+        zh:"我认为每个人都应该有机会接受良好的教育。",
+        groups:[["I think everyone should have the chance"],["to get a good education"],
+        ],
+        links:[["should","have"],["have","the"],["to","get"],["get","a"]],
+        weak:["should","have","the","to","a"],
+        tip:"<b>should have</b> 弱读 /ʃə dəv/；<b>get a good</b> 连读 /ɡe tə ɡʊd/。" },
+      { en:"We need to talk more openly about mental health.",
+        zh:"我们需要更公开地谈论心理健康。",
+        groups:[["We need to talk"],["more openly about"],["mental health"]],
+        links:[["need","to"],["talk","more"],["openly","about"]],
+        weak:["to","about"],
+        tip:"<b>need to</b> 口语常读 /niːdtə/；<b>mental</b> 重音在第一音节：MEN-tal。" },
+      { en:"Volunteering taught me a lot about responsibility.",
+        zh:"志愿服务教会了我很多关于责任的事。",
+        groups:[["Volunteering taught me"],["a lot about responsibility"]],
+        links:[["taught","me"],["me","a"],["lot","about"]],
+        weak:["me","a","about"],
+        tip:"<b>taught me a</b> 连读 /tɔː mi jə/；<b>responsibility</b> 重音在第四音节：re-spon-si-BI-li-ty。" },
+      { en:"The city is getting bigger, but the traffic is getting worse.",
+        zh:"城市越来越大，但交通越来越糟。",
+        groups:[["The city is getting bigger"],["but the traffic"],["is getting worse"]],
+        links:[["city","is"],["is","getting"],["but","the"]],
+        weak:["the","is","but","the","is"],
+        tip:"<b>city is getting</b> 三词连读 /ˈsɪt i zɡe tɪŋ/。整句几乎只有两个重音词，其余全弱读。" }
+    ]
+  }
+];
+
+/* ============================================================
+   工具函数
+   ============================================================ */
+const $ = s => document.querySelector(s);
+const $$ = s => [...document.querySelectorAll(s)];
+
+const CONTRACTIONS = {
+  "i'm":["i","am"], "i'd":["i","would"], "i'll":["i","will"], "i've":["i","have"],
+  "don't":["do","not"], "doesn't":["does","not"], "didn't":["did","not"],
+  "can't":["can","not"], "cannot":["can","not"], "won't":["will","not"],
+  "isn't":["is","not"], "aren't":["are","not"], "wasn't":["was","not"], "weren't":["were","not"],
+  "haven't":["have","not"], "hasn't":["has","not"], "hadn't":["had","not"],
+  "couldn't":["could","not"], "shouldn't":["should","not"], "wouldn't":["would","not"],
+  "it's":["it","is"], "that's":["that","is"], "let's":["let","us"], "there's":["there","is"],
+  "he's":["he","is"], "she's":["she","is"], "what's":["what","is"], "who's":["who","is"],
+  "you're":["you","are"], "we're":["we","are"], "they're":["they","are"],
+  "gonna":["going","to"], "wanna":["want","to"], "gotta":["got","to"]
+};
+
+function tokenize(str){
+  const raw = str.toLowerCase()
+    .replace(/[\u2018\u2019]/g,"'")
+    .replace(/[^a-z0-9'\s]/g," ")
+    .split(/\s+/)
+    .filter(Boolean);
+  const out = [];
+  for (const w of raw){
+    if (CONTRACTIONS[w]) out.push(...CONTRACTIONS[w]);
+    else out.push(w.replace(/^'+|'+$/g,""));
+  }
+  return out.filter(Boolean);
+}
+
+function lev(a,b){
+  const n=a.length,m=b.length;
+  if(!n) return m; if(!m) return n;
+  let prev = Array.from({length:m+1},(_,j)=>j);
+  for(let i=1;i<=n;i++){
+    const cur=[i];
+    for(let j=1;j<=m;j++){
+      cur[j]=Math.min(prev[j]+1, cur[j-1]+1, prev[j-1]+(a[i-1]===b[j-1]?0:1));
+    }
+    prev=cur;
+  }
+  return prev[m];
+}
+function sim(a,b){
+  if(a===b) return 1;
+  return 1 - lev(a,b)/Math.max(a.length,b.length);
+}
+
+/* 词级对齐：返回每个参考词的判定 */
+function alignWords(ref, hyp){
+  const n=ref.length, m=hyp.length;
+  const dp = Array.from({length:n+1},()=>new Array(m+1).fill(0));
+  const op = Array.from({length:n+1},()=>new Array(m+1).fill("-"));
+  for(let i=1;i<=n;i++){dp[i][0]=i;op[i][0]="del";}
+  for(let j=1;j<=m;j++){dp[0][j]=j;op[0][j]="ins";}
+  for(let i=1;i<=n;i++){
+    for(let j=1;j<=m;j++){
+      const s = dp[i-1][j-1] + (ref[i-1]===hyp[j-1]?0:1);
+      const d = dp[i-1][j]+1;
+      const ins = dp[i][j-1]+1;
+      let best=s, o="sub";
+      if(d<best){best=d;o="del";}
+      if(ins<best){best=ins;o="ins";}
+      dp[i][j]=best; op[i][j]=o;
+    }
+  }
+  // 回溯
+  let i=n,j=m;
+  const refRes = new Array(n).fill(null);
+  const extra = [];
+  while(i>0||j>0){
+    const o = (i>0&&j>0)?op[i][j]:"";
+    if(i>0&&j>0&&o==="sub"){
+      const s = sim(ref[i-1],hyp[j-1]);
+      refRes[i-1] = ref[i-1]===hyp[j-1]
+        ? {type:"ok", hyp:hyp[j-1]}
+        : (s>=0.62 ? {type:"close", hyp:hyp[j-1]} : {type:"miss", hyp:hyp[j-1]});
+      i--;j--;
+    } else if(i>0&&(j===0||o==="del")){
+      refRes[i-1]={type:"miss",hyp:null}; i--;
+    } else {
+      extra.push(hyp[j-1]); j--;
+    }
+  }
+  return {refRes, extra};
+}
+
+function scoreHypothesis(refTokens, hypText){
+  const hypTokens = tokenize(hypText);
+  if(hypTokens.length===0) return null;
+  const {refRes, extra} = alignWords(refTokens, hypTokens);
+  const n = refTokens.length;
+  let P=0,C=0,M=0;
+  for(const r of refRes){
+    if(!r||r.type==="miss") M++;
+    else if(r.type==="ok") P++;
+    else C++;
+  }
+  const recognized = P + C;
+  const coverage = recognized / n;          // 完整度
+  const accuracy = recognized ? (P + C*0.7)/recognized : 0; // 准确度
+  const overall = (P + C*0.7)/n;            // 综合
+  return {refRes, extra, P, C, M, n, coverage, accuracy, overall,
+          hypTokens, hypText, finalScore: Math.round(overall*100)};
+}
+
+/* ============================================================
+   状态
+   ============================================================ */
+let tIdx = 0, sIdx = 0, cur = null;
+let recognition = null, recording = false;
+let finalAlts = [];            // 每个 final 结果的候选数组（含多个 alternative）
+let mediaRecorder = null, audioChunks = [], audioURL = null;
+let recStartTime = 0, recEndTime = 0;
+let bestResult = null;
+const HISTORY_KEY = "speakwell.history.v1";
+
+/* ============================================================
+   渲染
+   ============================================================ */
+const topicBar = $("#topics");
+BANK.forEach((t,i)=>{
+  const el=document.createElement("div");
+  el.className="chip"+(i===0?" on":"");
+  el.textContent=t.topic;
+  el.onclick=()=>{ setTopic(i); };
+  topicBar.appendChild(el);
+});
+
+function setTopic(i){
+  tIdx=i; sIdx=0;
+  $$("#topics .chip").forEach((c,k)=>c.classList.toggle("on",k===i));
+  loadSentence();
+}
+function loadSentence(){
+  const t = BANK[tIdx];
+  cur = t.items[sIdx];
+  $("#topicname").textContent = t.topic;
+  $("#progress").textContent = `第 ${sIdx+1} / ${t.items.length} 句`;
+  $("#tip").innerHTML = cur.tip || "";
+  $("#zh").textContent = cur.zh;
+  renderSentence(false);
+  $("#result").style.display="none";
+  $("#btnReplay").style.display="none";
+  $("#btnToggleSent").style.display="none";
+  $("#live").textContent="";
+  bestResult=null;
+  resetAudio();
+}
+/* 连读/弱读标记渲染；hide=true 时原文模糊（盲读模式） */
+function renderSentence(hide){
+  const flat=[], gid=[];
+  cur.groups.forEach((g,gi)=>g.forEach(w=>{flat.push(w);gid.push(gi);}));
+  // 连读对：左右两个词都标上（弱读优先由 CSS 顺序保证）
+  const linkSet=new Set();
+  (cur.links||[]).forEach(([a,b])=>{
+    for(let i=0;i<flat.length-1;i++){
+      if(flat[i].toLowerCase()===a.toLowerCase() &&
+         flat[i+1].toLowerCase()===b.toLowerCase() &&
+         gid[i]===gid[i+1]){ linkSet.add(i); linkSet.add(i+1); break; }
+    }
+  });
+  const weakSet=new Set();
+  (cur.weak||[]).forEach(w=>{
+    flat.forEach((x,i)=>{ if(x.toLowerCase().replace(/[^a-z']/g,"")===w.toLowerCase()) weakSet.add(i); });
+  });
+
+  let html="";
+  flat.forEach((w,i)=>{
+    let cls="";
+    if(weakSet.has(i)) cls+=" weak";
+    if(linkSet.has(i)) cls+=" lk";
+    html += `<span class="${cls.trim()}">${hide?"●".repeat(w.length):w}</span>`;
+    if(i<flat.length-1){
+      if(gid[i]!==gid[i+1]) html += `<span class="gsep">/</span>`;
+      else if(linkSet.has(i)) html += `<span class="lk">‿</span>`;
+      else html += " ";
+    }
+  });
+  $("#sent").innerHTML = html;
+}
+
+/* ============================================================
+   标准示范（分意群朗读，句间停顿）
+   ============================================================ */
+let speaking=false;
+function updatePlayBtn(){
+  $("#btnPlay").textContent = speaking ? "⏸ 停止播放" : "▶ 听标准示范";
+}
+$("#rate").oninput = e => { $("#rateval").textContent = (+e.target.value).toFixed(2).replace(/0$/,"")+"x"; };
+
+$("#btnPlay").onclick = ()=>{
+  if(!("speechSynthesis" in window)){ toast("当前浏览器不支持语音合成，请用 Chrome / Edge"); return; }
+  if(speaking){ speechSynthesis.cancel(); speaking=false; updatePlayBtn(); return; }
+  const rate = +$("#rate").value;
+  const chunks = cur.groups.map(g=>g.join(" "));
+  const gap = Math.round(200 + (1.1-rate)*450);
+  speaking = true; updatePlayBtn();
+  let i=0;
+  const speakNext = ()=>{
+    if(i>=chunks.length){ speaking=false; updatePlayBtn(); return; }
+    const u = new SpeechSynthesisUtterance(chunks[i]);
+    u.lang="en-US"; u.rate=rate; u.pitch=1;
+    const v = pickVoice(); if(v) u.voice=v;
+    u.onend = ()=>{ i++; setTimeout(speakNext, gap); };
+    u.onerror = ()=>{ i++; setTimeout(speakNext, gap); };
+    speechSynthesis.speak(u);
+  };
+  speakNext();
+};
+function pickVoice(){
+  const vs = speechSynthesis.getVoices();
+  return vs.find(v=>/en-US/i.test(v.lang) && /female|samantha|zira|aria|jenny/i.test(v.name))
+      || vs.find(v=>/en-US/i.test(v.lang))
+      || vs.find(v=>/^en/i.test(v.lang)) || null;
+}
+if("speechSynthesis" in window) speechSynthesis.onvoiceschanged = ()=>{};
+
+/* ============================================================
+   录音 + 识别
+   ============================================================ */
+const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+
+$("#btnRec").onclick = ()=>{
+  if(recording) stopRecording(); else startRecording();
+};
+
+function startRecording(){
+  if(!SR){
+    toast("此浏览器不支持语音识别，请用电脑版 Chrome / Edge");
+    return;
+  }
+  if(speaking){ speechSynthesis.cancel(); speaking=false; updatePlayBtn(); }
+
+  finalAlts=[]; bestResult=null; window.__interim=""; recEndTime=0;
+  $("#result").style.display="none";
+  $("#live").textContent="";
+  $("#btnReplay").style.display="none";
+
+  // 同时录音，方便回放
+  startAudioCapture();
+
+  recognition = new SR();
+  recognition.lang="en-US";
+  recognition.interimResults=true;
+  recognition.continuous=true;
+  recognition.maxAlternatives=5;
+
+  recognition.onresult = (e)=>{
+    let interim="";
+    for(let i=e.resultIndex;i<e.results.length;i++){
+      const r=e.results[i];
+      // 每个 final 结果把所有候选都存下来，打分时逐个试、取最优
+      if(r.isFinal) finalAlts.push([...r].map(a=>a.transcript));
+      else interim += r[0].transcript + " ";
+    }
+    window.__interim = interim;
+    $("#live").textContent = (combinedText(0) + " " + interim).trim();
+  };
+  recognition.onerror = (e)=>{
+    if(e.error==="not-allowed" || e.error==="service-not-allowed"){
+      toast("麦克风权限被拒绝，请在浏览器地址栏允许麦克风");
+    } else if(e.error==="no-speech"){
+      toast("没听到声音，再试一次，靠近麦克风一点");
+    } else if(e.error!=="aborted"){
+      toast("识别出错：" + e.error);
+    }
+  };
+  recognition.onend = ()=>{
+    recording=false;
+    if(!recEndTime) recEndTime = performance.now();
+    $("#btnRec").textContent="● 开始朗读";
+    $("#btnRec").classList.remove("live");
+    stopAudioCapture();
+    finishScoring();
+  };
+
+  try{
+    recognition.start();
+    recording=true; recStartTime=performance.now();
+    $("#btnRec").textContent="■ 停止录音";
+    $("#btnRec").classList.add("live");
+  }catch(err){
+    toast("启动失败，请刷新页面重试");
+  }
+}
+function stopRecording(){
+  if(recognition){ try{ recognition.stop(); }catch(e){} }
+  recording=false;
+  $("#btnRec").textContent="● 开始朗读";
+  $("#btnRec").classList.remove("live");
+  recEndTime=performance.now();
+}
+
+function startAudioCapture(){
+  if(!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) return;
+  navigator.mediaDevices.getUserMedia({audio:true}).then(stream=>{
+    try{
+      mediaRecorder = new MediaRecorder(stream);
+      audioChunks=[];
+      mediaRecorder.ondataavailable = e=>{ if(e.data.size) audioChunks.push(e.data); };
+      mediaRecorder.onstop = ()=>{
+        resetAudio();
+        const blob = new Blob(audioChunks,{type:audioChunks[0]?.type||"audio/webm"});
+        audioURL = URL.createObjectURL(blob);
+        $("#btnReplay").style.display="inline-flex";
+        stream.getTracks().forEach(t=>t.stop());
+      };
+      mediaRecorder.start();
+    }catch(e){}
+  }).catch(()=>{});
+}
+function stopAudioCapture(){
+  if(mediaRecorder && mediaRecorder.state!=="inactive"){ try{ mediaRecorder.stop(); }catch(e){} }
+}
+function resetAudio(){
+  if(audioURL){ URL.revokeObjectURL(audioURL); audioURL=null; }
+}
+$("#btnReplay").onclick = ()=>{
+  if(!audioURL) return;
+  const a = $("#player");
+  a.src = audioURL;
+  a.play();
+  $("#btnReplay").textContent = "▶ 播放中…";
+  a.onended = ()=>{ $("#btnReplay").textContent = "↻ 回放我的录音"; };
+};
+
+/* ============================================================
+   打分
+   ============================================================ */
+/* 把多个 final 结果的「第 k 个候选」拼成一句完整假设 */
+function combinedText(k){
+  return finalAlts.map(alts => alts[Math.min(k, alts.length-1)] || "").join(" ").trim();
+}
+
+function finishScoring(){
+  if(!cur) return;
+  const refTokens = tokenize(cur.en);
+
+  // ---- 关键：把所有候选各打一次分，取最高的那个 ----
+  let cands = [];
+  const maxAlt = Math.max(1, ...finalAlts.map(a=>a.length));
+  for(let k=0;k<maxAlt;k++){
+    const t = combinedText(k);
+    if(!t) continue;
+    const r = scoreHypothesis(refTokens, t);
+    if(r) cands.push(r);
+  }
+  // 兜底：用画面上显示的内容
+  if(!cands.length){
+    const shown = $("#live").textContent.trim();
+    if(shown){ const r = scoreHypothesis(refTokens, shown); if(r) cands.push(r); }
+  }
+
+  if(!cands.length){
+    $("#result").style.display="block";
+    $("#result").innerHTML = `<div class="card-title">结果</div>
+      <div class="feedback">没有识别到任何内容。可能是麦克风没开、声音太小，或网络断了。<br>请检查后重读一次 —— <b>这次不算分，别放在心上</b>。</div>`;
+    return;
+  }
+
+  cands.sort((a,b)=>b.overall-a.overall);
+  bestResult = cands[0];
+  bestResult._candCount = cands.length;
+
+  const dur = (recEndTime - recStartTime)/1000;
+  const wpm = dur>0.8 ? Math.round(bestResult.hypTokens.length / dur * 60) : 0;
+
+  renderResult(bestResult, wpm);
+  saveHistory(bestResult, wpm);
+}
+
+function fmtScore(v){ return Math.round(v*100); }
+function scoreColor(s){
+  if(s>=85) return "var(--ok)";
+  if(s>=70) return "var(--acc)";
+  if(s>=55) return "var(--warn)";
+  return "var(--bad)";
+}
+function verdict(s){
+  if(s>=90) return ["优秀","这句的连读弱读已经很自然了"];
+  if(s>=80) return ["良好","地道度不错的，再抠一下红色词"];
+  if(s>=68) return ["中等","流畅度可以，个别词需要打磨"];
+  if(s>=52) return ["待提升","先放慢速度把每个词读清楚"];
+  return ["起步","建议先听 2 遍示范，再拆分意群跟读"];
+}
+
+function renderResult(r, wpm){
+  const s = r.finalScore;
+  const col = scoreColor(s);
+  const [v, vd] = verdict(s);
+  const C = 2*Math.PI*44;
+
+  let wordHtml = "";
+  const missList = [];
+  let k = 0;
+  cur.groups.forEach((g,gi)=>{
+    g.forEach(w=>{
+      const res = r.refRes[k];
+      const t = res ? res.type : "miss";
+      if(t==="miss") missList.push(w);
+      const hint = (res && res.hyp && res.hyp!==w.toLowerCase()) ? `<span class="hint">→ ${escapeHtml(res.hyp)}</span>` : "";
+      wordHtml += `<span class="w ${t}">${escapeHtml(w)}${hint}</span>`;
+      k++;
+    });
+    if(gi<cur.groups.length-1) wordHtml += `<span class="w extra">/</span>`;
+  });
+
+  let adv = "";
+  if(r.coverage<0.8){
+    adv = `有 <b>${missList.length}</b> 个词没被识别到：<span class="hl">${missList.slice(0,8).join("、")}</span>。先确认是真漏读了，还是被识别器漏听了 —— 点回放自己听。`;
+  } else if(r.accuracy<0.85){
+    adv = `词基本都说到了，但有几处读音偏离。看上面 <span style="color:var(--warn)">黄色</span> 和 <span style="color:var(--bad)">红色</span> 的词，对照示范再读一遍。`;
+  } else {
+    adv = `这句整体很稳。可以试着提速到 1.0x 再读一遍，看弱读会不会散架。`;
+  }
+
+  const wpmTxt = wpm ? `${wpm}` : "—";
+  let wpmNote = "";
+  if(wpm){
+    if(wpm<95) wpmNote = "偏慢，容易变成「一个词一个词念」";
+    else if(wpm>185) wpmNote = "偏快，注意别吞音";
+    else wpmNote = "语速正常";
+  }
+
+  $("#result").style.display="block";
+  $("#result").innerHTML = `
+    <div class="card-title">本次结果</div>
+    <div class="scorewrap">
+      <div class="ring">
+        <svg width="104" height="104">
+          <circle cx="52" cy="52" r="44" fill="none" stroke="var(--line)" stroke-width="8"/>
+          <circle cx="52" cy="52" r="44" fill="none" stroke="${col}" stroke-width="8"
+            stroke-linecap="round" stroke-dasharray="${C}"
+            stroke-dashoffset="${C*(1-s/100)}" style="transition:stroke-dashoffset .8s ease"/>
+        </svg>
+        <div class="val"><div class="num" style="color:${col}">${s}</div><div class="lbl">综合分</div></div>
+      </div>
+      <div class="bars">
+        <div class="bar">
+          <div class="bt"><span>说全了没 · 完整度</span><b>${fmtScore(r.coverage)}</b></div>
+          <div class="track"><div class="fill" style="background:var(--acc)" data-w="${fmtScore(r.coverage)}"></div></div>
+        </div>
+        <div class="bar">
+          <div class="bt"><span>说准了没 · 准确度</span><b>${fmtScore(r.accuracy)}</b></div>
+          <div class="track"><div class="fill" style="background:var(--acc2)" data-w="${fmtScore(r.accuracy)}"></div></div>
+        </div>
+        <div style="font-size:13px;color:${col};font-weight:600">${v}</div>
+        <div style="font-size:12px;color:var(--dim);margin-top:2px">${vd}</div>
+      </div>
+    </div>
+
+    <div class="card-title">逐词对照</div>
+    <div class="words">${wordHtml}</div>
+
+    <div class="stat">
+      <div><div class="n">${r.P}</div><div class="k">完全对上</div></div>
+      <div><div class="n" style="color:var(--warn)">${r.C}</div><div class="k">接近</div></div>
+      <div><div class="n" style="color:var(--bad)">${r.M}</div><div class="k">没识别到</div></div>
+      <div><div class="n">${wpmTxt}</div><div class="k">词/分钟</div></div>
+    </div>
+    ${wpm?`<div style="font-size:12px;color:var(--dim2);margin-top:8px">语速：${wpmNote}</div>`:""}
+
+    <div class="feedback">${adv}</div>
+    <div style="font-size:12px;color:var(--dim2);margin-top:12px;line-height:1.7">
+      识别器听到的原文：<span style="color:var(--dim)">${escapeHtml(r.hypText)}</span><br>
+      ${r._candCount>1?`已在 <b style="color:var(--acc)">${r._candCount}</b> 个候选识别结果中取最优的一个计分。`:""}
+    </div>
+  `;
+  $("#btnToggleSent").style.display="inline-flex";
+  setTimeout(()=>{ $$("#result .fill").forEach(f=>f.style.width=f.dataset.w+"%"); }, 30);
+}
+function escapeHtml(s){ return String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c])); }
+
+/* ============================================================
+   导航
+   ============================================================ */
+$("#btnNext").onclick = ()=>{
+  if(sIdx < BANK[tIdx].items.length-1) sIdx++;
+  else { tIdx = (tIdx+1) % BANK.length; sIdx=0; $$("#topics .chip").forEach((c,k)=>c.classList.toggle("on",k===tIdx)); }
+  loadSentence();
+};
+$("#btnPrev").onclick = ()=>{
+  if(sIdx>0) sIdx--;
+  else { tIdx = (tIdx-1+BANK.length)%BANK.length; sIdx = BANK[tIdx].items.length-1; $$("#topics .chip").forEach((c,k)=>c.classList.toggle("on",k===tIdx)); }
+  loadSentence();
+};
+
+/* 盲读模式：隐藏原文后再读一次 */
+let hidden=false;
+$("#btnToggleSent").onclick = ()=>{
+  hidden=!hidden;
+  renderSentence(hidden);
+  $("#btnToggleSent").textContent = hidden ? "👁 显示原文" : "👁 看原文重读";
+};
+
+/* ============================================================
+   记录
+   ============================================================ */
+function getHistory(){ try{ return JSON.parse(localStorage.getItem(HISTORY_KEY)||"[]"); }catch(e){ return []; } }
+function saveHistory(r, wpm){
+  const h = getHistory();
+  h.unshift({ ts:Date.now(), score:r.finalScore, cov:fmtScore(r.coverage), acc:fmtScore(r.accuracy),
+              wpm, text:cur.en, topic:BANK[tIdx].topic });
+  localStorage.setItem(HISTORY_KEY, JSON.stringify(h.slice(0,200)));
+  renderHistory();
+}
+function renderHistory(){
+  const h = getHistory();
+  if(!h.length){
+    $("#hstat").innerHTML = `<div class="empty" style="flex:1;padding:14px 0">还没有记录，去练一句吧</div>`;
+    $("#hist").innerHTML = `<div class="empty">暂无练习记录</div>`;
+    return;
+  }
+  const avg = Math.round(h.reduce((a,b)=>a+b.score,0)/h.length);
+  const best = Math.max(...h.map(x=>x.score));
+  const avgAcc = Math.round(h.reduce((a,b)=>a+b.acc,0)/h.length);
+  $("#hstat").innerHTML = `
+    <div><div class="n" style="color:${scoreColor(avg)}">${avg}</div><div class="k">平均综合</div></div>
+    <div><div class="n" style="color:var(--ok)">${best}</div><div class="k">最高分</div></div>
+    <div><div class="n">${h.length}</div><div class="k">练习次数</div></div>
+    <div><div class="n">${avgAcc}</div><div class="k">平均准确度</div></div>`;
+  $("#hist").innerHTML = h.slice(0,40).map(x=>{
+    const d = new Date(x.ts);
+    const p = n=>String(n).padStart(2,"0");
+    return `<div class="hi">
+      <div class="s" style="color:${scoreColor(x.score)}">${x.score}</div>
+      <div class="m">
+        <div class="t">${escapeHtml(x.text)}</div>
+        <div class="d">${x.topic} · 完整${x.cov} · 准确${x.acc}${x.wpm?` · ${x.wpm}wpm`:""} · ${p(d.getMonth()+1)}/${p(d.getDate())} ${p(d.getHours())}:${p(d.getMinutes())}</div>
+      </div>
+    </div>`;
+  }).join("");
+}
+$("#btnClear").onclick = ()=>{
+  if(confirm("确定清空全部练习记录？")){ localStorage.removeItem(HISTORY_KEY); renderHistory(); toast("已清空"); }
+};
+
+/* ============================================================
+   Tab 切换
+   ============================================================ */
+$$(".tab").forEach(t=>{
+  t.onclick = ()=>{
+    $$(".tab").forEach(x=>x.classList.remove("on"));
+    t.classList.add("on");
+    $$(".view").forEach(v=>v.classList.remove("on"));
+    $("#v-"+t.dataset.v).classList.add("on");
+    if(t.dataset.v==="history") renderHistory();
+    window.scrollTo({top:0,behavior:"smooth"});
+  };
+});
+
+/* ============================================================
+   Toast
+   ============================================================ */
+let toastTimer=null;
+function toast(msg){
+  const el=$("#toast");
+  el.textContent=msg; el.classList.add("on");
+  clearTimeout(toastTimer);
+  toastTimer=setTimeout(()=>el.classList.remove("on"), 2600);
+}
+
+/* ============================================================
+   初始化
+   ============================================================ */
+loadSentence();
+renderHistory();
+if(!SR){
+  setTimeout(()=>toast("检测到当前浏览器不支持语音识别，请用电脑版 Chrome 或 Edge 打开以获得打分功能"), 800);
+}
+</script>
+</body>
+</html>
